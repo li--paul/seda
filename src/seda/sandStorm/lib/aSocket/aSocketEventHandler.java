@@ -55,5 +55,11 @@ abstract class aSocketEventHandler implements EventHandlerIF {
   public abstract void handleEvent(QueueElementIF qel);
   public abstract void handleEvents(QueueElementIF qelarr[]);
 
+    //  Called to nudge the selecting thread out of a poll when a StartReading
+    //  event is in the queue.
+  public void interruptSelect() {
+    if(DEBUG)System.err.println("ReadEventHandler.interruptSelect() called.");
+    selsource.interruptSelect();
+  }
 }
 

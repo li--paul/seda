@@ -52,6 +52,8 @@ public class aSocketMgr {
   private static SinkIF listen_sink;
   private static SinkIF write_sink;
 
+  private static ReadEventHandler read_handler;
+
   private static Object init_lock = new Object();
   private static boolean initialized = false;
 
@@ -68,7 +70,7 @@ public class aSocketMgr {
     synchronized (init_lock) {
       if (PROFILE) tracer = new Tracer("aSocketMgr");
 
-      SandstormConfigIF cfg = mgr.getConfig();
+      SandstormConfig cfg = mgr.getConfig();
 
       String provider = cfg.getString("global.aSocket.provider");
       if (provider == null) {
@@ -97,6 +99,7 @@ public class aSocketMgr {
       sysmgr.addThreadManager("aSocket", aSocketTM);
 
       ReadEventHandler revh = new ReadEventHandler();
+      read_handler = revh;
       aSocketStageWrapper rsw;
       if (cfg.getBoolean("global.aSocket.governor.enable")) {
 	aSocketRCTM = new aSocketRCTMSleep(mgr);
@@ -189,6 +192,14 @@ public class aSocketMgr {
 	System.err.println("aSocketMgr.enqueueRequest: Warning: Got SinkException "+se);
 	System.err.println("aSocketMgr.enqueueRequest: This is a bug - contact <mdw@cs.berkeley.edu>");
       }
+      if (req instanceof ATcpStartReadRequest) {
+	  ATcpStartReadRequest srreq = (ATcpStartReadRequest)req;
+	  SockState ss = srreq.conn.sockState;
+      } else if (req instanceof AUdpStartReadRequest) {
+	  AUdpStartReadRequest srreq = (AUdpStartReadRequest)req;
+	  DatagramSockState ss = srreq.sock.sockState;
+      }
+      read_handler.interruptSelect();
 
     } else if ((req instanceof ATcpListenRequest) ||
 	(req instanceof ATcpSuspendAcceptRequest) ||

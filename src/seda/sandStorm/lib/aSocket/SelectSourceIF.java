@@ -104,6 +104,12 @@ public interface SelectSourceIF extends SourceIF {
    */
   public int size();
 
+  /**
+   * Nudge the selector out of a poll() so that a StartReading or similar
+   * event in the queue can be processed at once.
+   */
+  public void interruptSelect();
+
   /* 
 
   // Actually performs the poll and sets ready[], ready_off, ready_size
