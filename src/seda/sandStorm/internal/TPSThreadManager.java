@@ -104,6 +104,12 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
   }
 
   /**
+   * Wake any thread waiting for work.  This is called by
+   * an enqueue* method of FiniteQueue.
+   **/
+  public void wake(){ /* do nothing*/ }
+
+  /**
    * Internal class representing the Runnable for a single stage.
    */
   public class stageRunnable implements Runnable {

@@ -82,6 +82,12 @@ class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
   }
 
   /**
+   * Wake any thread waiting for work.  This is called by
+   * an enqueue* method of FiniteQueue.
+   **/
+  public void wake(){ /* ignore */ }
+
+  /**
    * Internal class representing a single aSocketTM-managed thread.
    */
   protected class aSocketThread implements Runnable {
