@@ -59,7 +59,7 @@ class StageWrapper implements StageWrapperIF {
     this.handler = handler;
     this.config = config;
     this.threadmgr = threadmgr;
-    this.eventQ = new FiniteQueue(name);
+    this.eventQ = new FiniteQueue(name, threadmgr);
 
     setup();
   }
@@ -75,7 +75,7 @@ class StageWrapper implements StageWrapperIF {
     this.config = config;
     this.threadmgr = threadmgr;
 
-    this.eventQ = new FiniteQueue(name);
+    this.eventQ = new FiniteQueue(name, threadmgr);
     QueueThresholdPredicate pred = new QueueThresholdPredicate(eventQ, queueThreshold);
     eventQ.setEnqueuePredicate(pred);
 
