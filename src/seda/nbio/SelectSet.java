@@ -24,7 +24,6 @@
 
 package seda.nbio;
 
-import java.util.Vector;
 
 /**
  * A SelectSet represents a set of SelectItems which you wish to

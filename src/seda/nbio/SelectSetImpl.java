@@ -24,8 +24,6 @@
 
 package seda.nbio;
 
-import java.util.Vector;
-
 /**
  * SelectSetImpl represents an internal implementation of SelectSet.
  * This allows SelectSet to change its internal implementation based on
