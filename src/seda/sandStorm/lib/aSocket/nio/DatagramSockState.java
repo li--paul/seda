@@ -65,6 +65,7 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
   private NIOSelectSource nio_read_selsource;
   private NIOSelectSource nio_write_selsource;
   private ByteBuffer nio_readbuf;
+  private boolean connected;
 
   public DatagramSockState(AUdpSocket sock, InetAddress addr, int port) throws IOException {
     if (DEBUG) System.err.println("DatagramSockState: Constructor called");
@@ -72,6 +73,7 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     this.readCompQ = sock.compQ;
     this.writeClogThreshold = sock.writeClogThreshold;
     this.maxPacketSize = sock.maxPacketSize;
+    this.connected = false;
 
     readBuf = new byte[maxPacketSize];
     this.nio_write_selsource = null;
@@ -142,9 +144,10 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
 
     try {
       if (DEBUG) System.err.println("DatagramSockState: doRead trying receive");
-      p = new DatagramPacket(readBuf, 0, readBuf.length);
-      len = nio_dgsock.read(nio_readbuf);
-      p.setSocketAddress(nio_dgsock.socket().getRemoteSocketAddress());
+      SocketAddress peersa = nio_dgsock.receive(nio_readbuf);
+      len = nio_readbuf.position();
+      p = new DatagramPacket(readBuf, 0, len);
+      p.setSocketAddress(peersa);
       p.setLength(len);
 
       if (DEBUG) System.err.println("DatagramSockState: receive returned "+len);
@@ -171,6 +174,7 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     System.err.println("pkt.size()="+pkt.size());
     // 0 is special (indicates no sequence number)
     seqNum++; if (seqNum == 0) seqNum = 1;
+    // XXX Should really test for READ_BUFFER_COPY here as in SockState.java
     readBuf = new byte[maxPacketSize];
     nio_readbuf = ByteBuffer.wrap(readBuf);
 
@@ -232,35 +236,35 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     this.cur_write_buf = req.buf;
   }
 
-    protected boolean tryWrite() throws SinkClosedException {
-        int ret;
-        DatagramPacket outgoing;
+  protected boolean tryWrite() throws SinkClosedException {
+    int ret;
+    ByteBuffer bb;
+    DatagramPacket outgoing;
+    InetAddress send_addr;
+    int send_port;
 
-        try {
-            if (cur_write_buf instanceof AUdpPacket) {
-                AUdpPacket udpp = (AUdpPacket)cur_write_buf;
-                outgoing = new DatagramPacket(udpp.data, udpp.offset, udpp.size, udpp.address, udpp.port);
-            } else {
-                outgoing = new DatagramPacket(cur_write_buf.data, cur_write_buf.offset, cur_write_buf.size);
-            }
-            ByteBuffer bb = ByteBuffer.wrap(outgoing.getData());
-            if ((outgoing.getAddress() != null)  &&
-                !outgoing.getAddress().equals(
-                    nio_dgsock.socket().getInetAddress()
-                )
-            ) {
-                throw new IllegalArgumentException("DatagramPacket does not equal address of connected DatagramChannel");
-            }
-            /* XXX: difference between write and send? */
-            ret = nio_dgsock.write(bb);
-        } catch (IOException ioe) {
-            // Assume this is because socket was already closed
-            this.close(null);
-            throw new SinkClosedException("DatagramSockState: tryWrite got exception doing write: "+ioe.getMessage());
-        }
-        if (ret == cur_write_buf.size) return true;
-        else return false;
+    try {
+      if (cur_write_buf instanceof AUdpPacket) {
+	AUdpPacket udpp = (AUdpPacket)cur_write_buf;
+	bb = ByteBuffer.wrap(udpp.data, udpp.offset, udpp.size);
+	InetSocketAddress isa = new InetSocketAddress(udpp.address, udpp.port);
+	ret = nio_dgsock.send(bb, isa);
+      } else {
+	// XXX Should check if !connected and throw IOException 
+	// (not just SinkClosedException)
+	bb = ByteBuffer.wrap(cur_write_buf.data, cur_write_buf.offset, cur_write_buf.size);
+	ret = nio_dgsock.write(bb);
+      }
+
+    } catch (IOException ioe) {
+      // Assume this is because socket was already closed
+      if (DEBUG) System.err.println("dgss.tryWrite(): Got exception: "+ioe);
+      this.close(null);
+      throw new SinkClosedException("DatagramSockState: tryWrite got exception doing write: "+ioe.getMessage());
     }
+    if (ret == cur_write_buf.size) return true;
+    else return false;
+  }
 
   void writeReset() {
     this.cur_write_req = null;
@@ -313,7 +317,8 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
 
   protected void connect(InetAddress addr, int port) {
       try {
-          nio_dgsock.connect(new InetSocketAddress(addr, port));
+      	nio_dgsock.connect(new InetSocketAddress(addr, port));
+	this.connected = true;
       } catch (IOException ioe) {
           System.err.println("DatagramSockState: Error connecting: " + ioe);
       }

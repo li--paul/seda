@@ -42,9 +42,13 @@ public class PingpongUDP {
   FiniteQueue comp_q = null;
   SinkIF sink;
   AUdpSocket sock;
+  InetAddress peer_addr;
 
   private static final boolean DEBUG = true;
   private static final boolean VERBOSE = true;
+
+  // If true, use AUdpSocket.connect() to create default send address
+  private static final boolean CONNECT = false;
 
   // If true, do more careful measurements (for benchmarking)
   private static final boolean BENCH = true;
@@ -58,7 +62,7 @@ public class PingpongUDP {
   private static final int NUM_MSGS_PER_MEASUREMENT = 100;
   private static long measurements[];
 
-  private static final int PORTNUM = 15957;
+  private static final int PORTNUM = 5060;
   private static int MSG_SIZE;
 
   private static int getInt(byte[] data) {
@@ -79,8 +83,9 @@ public class PingpongUDP {
     data[0] = (byte)((0x000000ff & p) >>0);
   }
 
-  public PingpongUDP(String peer, boolean sending) {
+  public PingpongUDP(String peer, boolean sending) throws Exception {
     this.peer = peer;
+    this.peer_addr = InetAddress.getByName(this.peer);
     this.sending = sending;
   }
 
@@ -93,31 +98,37 @@ public class PingpongUDP {
 
     if (this.sending) {
         sock = new AUdpSocket(PORTNUM, comp_q);
-        InetAddress addr = InetAddress.getByName(peer);
-        sock.connect(addr, PORTNUM + 1);
+        if (CONNECT) sock.connect(peer_addr, PORTNUM + 1);
     } else {
         sock = new AUdpSocket(PORTNUM + 1, comp_q);
-        InetAddress addr = InetAddress.getByName(peer);
-        sock.connect(addr, PORTNUM);
+        if (CONNECT) sock.connect(peer_addr, PORTNUM);
     }
 
-    while (!connected) {
+    if (CONNECT) {
+      while (!connected) {
 
-      /* Wait for connection */
-      if (DEBUG) System.err.println("Pinpong: Waiting for connection to complete");
-      while ((fetched = comp_q.blocking_dequeue_all(0)) == null) ;
+	/* Wait for connection */
+	if (DEBUG) System.err.println("Pinpong: Waiting for connection to complete");
+	while ((fetched = comp_q.blocking_dequeue_all(0)) == null) ;
 
-      if (fetched.length != 1) throw new IOException("Got more than one event on initial fetch?");
+	if (fetched.length != 1) throw new IOException("Got more than one event on initial fetch?");
 
-      if (fetched[0] instanceof AUdpConnectEvent) {
-	sock.startReader(comp_q);
-	sink = (SinkIF)sock;
-	connected = true;
-	if (DEBUG) System.err.println("PingpongUDP: finished connection");
-      } else {
-	throw new IOException("Unknown event returned waiting for connect: "+fetched[0]);
+	if (fetched[0] instanceof AUdpConnectEvent) {
+	  sock.startReader(comp_q);
+	  sink = (SinkIF)sock;
+	  connected = true;
+	  if (DEBUG) System.err.println("PingpongUDP: finished connection");
+	} else {
+	  throw new IOException("Unknown event returned waiting for connect: "+fetched[0]);
+	}
       }
+
+    } else {
+      // Not connecting
+      sock.startReader(comp_q);
+      sink = (SinkIF) sock;
     }
+
 
   }
 
@@ -130,7 +141,20 @@ public class PingpongUDP {
 
     // Allocate buffer for message
     byte barr[] = new byte[MSG_SIZE];
-    BufferElement buf = new BufferElement(barr);
+    BufferElement buf;
+
+    if (CONNECT) {
+      buf = new BufferElement(barr);
+    } else {
+      buf = new AUdpPacket(barr);
+      ((AUdpPacket)buf).address = peer_addr;
+      if (sending) { 
+	((AUdpPacket)buf).port = PORTNUM+1;
+      } else {
+	((AUdpPacket)buf).port = PORTNUM;
+      }
+    }
+      
     putInt(barr, seqNum);
 
     if (DEBUG) System.err.println("Pinpong: initialized packet");
@@ -164,9 +188,9 @@ public class PingpongUDP {
       if (DEBUG) System.err.println("PingpongUDP: Waiting for dequeue...");
       while ((fetched = comp_q.blocking_dequeue_all(0)) == null) ;
 
-      if (DEBUG) System.err.println("PingpongUDP: Got event: "+fetched+":"+fetched.length);
 
       for (i = 0; i < fetched.length; i++) {
+        if (DEBUG) System.err.println("PingpongUDP: Got event: "+fetched[i]);
         if (fetched[i] instanceof aSocketErrorEvent) {
           throw new IOException("Got error! "+((aSocketErrorEvent)fetched[i]).getMessage());
         }

@@ -39,6 +39,7 @@ public class AUdpPacket extends BufferElement {
   public InetAddress address = null;
   public int port = -1;
 
+
   /**
    * Create an AUdpPacket with the given data, an offset of 0, and a 
    * size of data.length.
@@ -85,6 +86,22 @@ public class AUdpPacket extends BufferElement {
    */
   public AUdpPacket(int size) {
     this(new byte[size], 0, size, null);
+  }
+
+  /**
+   * Create an AUdpPacket from the given DatagramPacket and a null
+   * completion queue.
+   */
+  public AUdpPacket(DatagramPacket dp) {
+    this(dp.getData(), dp.getOffset(), dp.getLength(), null, dp.getAddress(), dp.getPort());
+  }
+
+  /**
+   * Create an AUdpPacket from the given DatagramPacket and completion
+   * queue.
+   */
+  public AUdpPacket(DatagramPacket dp, SinkIF compQ) {
+    this(dp.getData(), dp.getOffset(), dp.getLength(), compQ, dp.getAddress(), dp.getPort());
   }
 
   /**
