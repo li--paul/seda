@@ -110,7 +110,7 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     // Let the threads start
     try {
       System.err.println("Sandstorm: Waiting for all components to start...");
-      Thread.currentThread().sleep(500);
+      Thread.sleep(500);
     } catch (InterruptedException ie) {
       // Ignore
     }

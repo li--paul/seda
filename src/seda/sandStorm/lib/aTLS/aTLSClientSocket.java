@@ -152,7 +152,7 @@ public class aTLSClientSocket extends ATcpClientSocket{
 		}
 	    }
 	    
-	    this.mgr = ss.getManager();
+	    aTLSClientSocket.mgr = ss.getManager();
 
 	    // for now assuming that all client sockets have the same policy and context
 

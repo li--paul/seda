@@ -516,7 +516,7 @@ public class UDPBench {
 	}
 	if (!connected) {
 	  try {
-	    Thread.currentThread().sleep(100);
+	    Thread.sleep(100);
 	  } catch (InterruptedException e) {
 	  }
 	}

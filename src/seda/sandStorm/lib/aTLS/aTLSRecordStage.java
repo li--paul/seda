@@ -168,7 +168,7 @@ class aTLSRecordStage implements EventHandlerIF, aTLSConst {
 		    cs.prof.addMeasurements(System.currentTimeMillis(), "aTLSRecordStage just received ATcpConnection for client, going to startReader and start the handshake");
 		}
 		
-		atlsconn = new aTLSConnection (cs, atcpconn, cs.getSink(), encryptSink, mySink, false, cs.ctx, cs.aTLSSessionID);
+		atlsconn = new aTLSConnection (cs, atcpconn, cs.getSink(), encryptSink, mySink, false, aTLSClientSocket.ctx, cs.aTLSSessionID);
 		// allow the client socket to have a reference to the aTLSConnection to gain
 		// acces to the sessionID of this connection for resuming purposes.
 		cs.setaTLSConn (atlsconn);

@@ -70,7 +70,7 @@ public class DynamicHttp implements EventHandlerIF, HaboobConst {
   }
 
   public void init(ConfigDataIF config) throws Exception {
-    this.config = config;
+    DynamicHttp.config = config;
     mysink = config.getStage().getSink();
 
     if (myurl == null) {

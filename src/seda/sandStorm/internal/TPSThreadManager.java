@@ -176,7 +176,7 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
        	try {
 	  if (DEBUG_VERBOSE) System.err.println(name+": Doing blocking dequeue for "+wrapper);
 
-	  Thread.currentThread().yield();
+	  Thread.yield(); // only accomplishes delay
 
 	  // Run any pending batches
 	  boolean ranbatch = false;

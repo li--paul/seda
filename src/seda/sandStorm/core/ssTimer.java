@@ -394,7 +394,7 @@ public class ssTimer implements Runnable, ProfilableIF {
 	  te.cancelEvent(t2500);
       } else {
 	try {
-	  Thread.currentThread().sleep(5);
+	  Thread.sleep(5);
 	} catch (InterruptedException ie) {
 	}
       }

@@ -108,7 +108,7 @@ public class Pingpong {
 	  System.err.println("Still trying to connect: "+((aSocketErrorEvent)fetched[0]).toString());
 	}
 	try {
-	  Thread.currentThread().sleep(100);
+	  Thread.sleep(100);
 	} catch (InterruptedException ie) {
 	  // Do nothing
 	}
@@ -150,7 +150,7 @@ public class Pingpong {
 	if (PROFILE) tracer.trace("send first enqueue");
   	sink.enqueue(buf);
 	if (PROFILE) tracer.trace("send first enqueue done");
-	Thread.currentThread().yield();
+	Thread.yield(); // only accomplishes delay
       } catch (SinkException se) {
 	System.err.println("Warning: Got SinkException on enqueue: "+se.getMessage());
       }
@@ -233,7 +233,7 @@ public class Pingpong {
 		if (PROFILE) tracer.trace("send enqueue");
 		sink.enqueue(buf);
 		if (PROFILE) tracer.trace("send enqueue done");
-		Thread.currentThread().yield();
+		Thread.yield(); // only accomplishes delay
 	      } catch (SinkException se) {
 		System.err.println("Warning: Got SinkException on enqueue: "+se);
 	      }

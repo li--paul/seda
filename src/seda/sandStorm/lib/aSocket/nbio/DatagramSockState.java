@@ -216,6 +216,8 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     return true;
   }
 
+  // does not override inherited method from DatagramSocketState since it is
+  // private to a different package
   void initWrite(AUdpWriteRequest req) {
     this.cur_write_req = req;
     this.cur_write_buf = req.buf;
@@ -242,6 +244,8 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     else return false;
   }
 
+  // does not override inherited method from DatagramSocketState since it is
+  // private to a different package
   void writeReset() {
     this.cur_write_req = null;
     this.outstanding_writes--;
@@ -257,6 +261,8 @@ public class DatagramSockState extends seda.sandStorm.lib.aSocket.DatagramSockSt
     write_selsource.update(writesi);
   }
 
+  // does not override inherited method from DatagramSocketState since it is
+  // private to a different package
   boolean isClosed() {
     return closed;
   }

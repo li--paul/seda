@@ -51,7 +51,7 @@ public class NBIOClient {
         int c = os.nbWrite(barr);
 	System.err.println("WROTE "+c+" bytes");
 	try {
-	  Thread.currentThread().sleep(1000);
+	  Thread.sleep(1000);
 	} catch (InterruptedException ie) {
         }
       }

@@ -83,7 +83,7 @@ public class MDWUtil {
    */
   public static void sleep(long delay) {
     try {
-      Thread.currentThread().sleep(delay);
+      Thread.sleep(delay);
     } catch (InterruptedException ie) {
       // Ignore
     }

@@ -111,7 +111,7 @@ class sandStormProfiler extends Thread implements sandStormConst, ProfilerIF {
       pw.flush();
      
       try {
-        Thread.currentThread().sleep(delay);
+        Thread.sleep(delay);
       } catch (InterruptedException ie) {
       }
     }

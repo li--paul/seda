@@ -216,7 +216,7 @@ public class MultiClientThreaded extends Thread {
       int s = (Math.abs(r.nextInt()) % SLEEP_TIME) + SLEEP_TIME;
       try {
 	System.err.println("Client thread "+tnum+" doing initial sleep "+s+"ms");
-	Thread.currentThread().sleep(s);
+	Thread.sleep(s);
       } catch (InterruptedException ie) {
 	// Ignore
       }
@@ -248,13 +248,13 @@ public class MultiClientThreaded extends Thread {
 	}
       }
 
-      Thread.currentThread().yield();
+      Thread.yield(); // only accomplishes delay
 
       if (QUIET) {
 	System.err.println("Client thread "+tnum+" started");
 	while (true) {
 	  try {
-	    Thread.currentThread().sleep(100000);
+	    Thread.sleep(100000);
 	  } catch (InterruptedException ie) {
 	    // Ignore
 	  }
@@ -267,7 +267,7 @@ public class MultiClientThreaded extends Thread {
 	while (System.currentTimeMillis() < (t1+s)) {
 	  try {
 	    System.err.println("Client thread "+tnum+" doing second sleep "+s+"ms");
-	    Thread.currentThread().sleep(s);
+	    Thread.sleep(s);
 	  } catch (InterruptedException ie) {
 	    // Ignore
 	  }
@@ -306,7 +306,7 @@ public class MultiClientThreaded extends Thread {
       os.write(barr); 
       os.flush();
       
-      Thread.currentThread().yield();
+      Thread.yield(); // only accomplishes delay
       i++;
 
       if ((i % SEND_BURST_SIZE) == 0) {
@@ -407,7 +407,7 @@ public class MultiClientThreaded extends Thread {
         int s = Math.abs(r.nextInt()) % 5000;
         try {
     	  System.err.println("Doing initial sleep "+s+"ms");
-   	  Thread.currentThread().sleep(s);
+   	  Thread.sleep(s);
     	} catch (InterruptedException ie) {
   	  // Ignore
    	}
@@ -416,7 +416,7 @@ public class MultiClientThreaded extends Thread {
 	for (int i = 0; i < NUM_CONNECTIONS; i++) {
 	  sarr[i] = new Socket(REMOTE_HOST, PORTNUM);
           try {
-   	    Thread.currentThread().sleep(10);
+   	    Thread.sleep(10);
       	  } catch (InterruptedException ie) {
   	    // Ignore
    	  }
@@ -425,7 +425,7 @@ public class MultiClientThreaded extends Thread {
 	System.err.println("Done creating connections");
 	while (true) {
 	  try {
-	    Thread.currentThread().sleep(100000);
+	    Thread.sleep(100000);
 	  } catch (InterruptedException ie) {
 	    // Ignore
 	  }

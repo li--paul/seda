@@ -189,7 +189,7 @@ class AFileTPTM extends TPSThreadManager implements ThreadManagerIF, ProfilableI
 	  // If events still pending, place back on file queue
 	  if (((SourceIF)impl.getQueue()).size() != 0) fileReady(impl);
 
-	  Thread.currentThread().yield();
+	  Thread.yield(); // only accomplishes delay
 
 	} catch (Exception e) {
 	  System.err.println(name+": got exception "+e);

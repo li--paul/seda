@@ -32,30 +32,8 @@ public class aTLSprofiler {
     int count = 0;
     static long baseTime = 0;
 
-//      public aTLSprofiler (String stageName) {
-//  	totalmeasurements = 200;
-//  	this.stageName = stageName;
-//      }
-    
-//      public aTLSprofiler (String stageName, int total) {
-//  	totalmeasurements = total;
-//  	this.stageName = stageName;
-//      }
-    
-
-//      public void addMeasurements (long t1, long t2) {
-//          sum += (t2 - t1);
-//  	long check = t2-t1;
-//  	count++;
-//  	if (count == totalmeasurements) {
-//  	    double total = (sum * 1.0) / (count * 1.0);
-//  	    System.err.println("DENCHI: Time to do work in " + stageName + ": " + total +" ms average");
-//  	    count = 0; sum = 0;
-//  	}
-//      }
-
     public aTLSprofiler (long baseTime) {
-	this.baseTime = baseTime;
+	    aTLSprofiler.baseTime = baseTime;
     }
 
     public void addMeasurements (long time, String action) {

@@ -124,7 +124,7 @@ class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
 
       while (true) {
 
-	Thread.currentThread().yield();
+	Thread.yield(); // Only accomplishes delay
 
         if (DEBUG) System.err.println(name+": Looping in run()");
 	try {

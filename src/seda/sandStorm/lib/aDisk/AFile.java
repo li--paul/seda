@@ -30,7 +30,6 @@ import seda.sandStorm.api.SinkIF;
 import seda.sandStorm.core.BufferElement;
 import seda.sandStorm.core.SimpleSink;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

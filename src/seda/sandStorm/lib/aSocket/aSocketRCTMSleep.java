@@ -122,7 +122,7 @@ class aSocketRCTMSleep extends aSocketThreadManager implements ThreadManagerIF, 
 
 	if (((num_measurements % sleepfreq) == 0) && (sleeptime > 0)) {
 	  try {
-	    Thread.currentThread().sleep(sleeptime);
+	    Thread.sleep(sleeptime);
 	  } catch (InterruptedException ie) {
 	    // Ignore
 	  }

@@ -26,7 +26,6 @@ package seda.sandStorm.internal;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
 import seda.sandStorm.main.*;
 import java.util.*;
 
@@ -92,7 +91,7 @@ class TPPThreadManager implements ThreadManagerIF {
       StageWrapperIF stage = (StageWrapperIF)e.nextElement();
       deregister(stage);
     }
-    tg.stop();
+    tg.interrupt();
   }
 
   /**

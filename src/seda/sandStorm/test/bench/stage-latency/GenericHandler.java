@@ -63,7 +63,7 @@ public class GenericHandler implements EventHandlerIF {
 
     if (SLEEP_TIME != 0) {
       try {
-	Thread.currentThread().sleep(SLEEP_TIME);
+	Thread.sleep(SLEEP_TIME);
       } catch (InterruptedException ie) {
   	System.err.println("Warning: Interrupted sleep!");
       }

@@ -44,7 +44,7 @@ public class BlockingClient {
         ps.println("Hello there server!");
         ps.flush();
         try {
-          Thread.currentThread().sleep(1000);
+          Thread.sleep(1000);
         } catch (InterruptedException ie) {
         }
       }

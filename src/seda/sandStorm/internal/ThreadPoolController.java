@@ -195,7 +195,7 @@ public class ThreadPoolController {
       while (true) {
 	adjustThreadPools();
 	try {
-	  Thread.currentThread().sleep(controllerDelay);
+	  Thread.sleep(controllerDelay);
 	} catch (InterruptedException ie) {
 	  // Ignore
 	}
