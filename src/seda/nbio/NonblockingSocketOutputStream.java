@@ -24,6 +24,7 @@
 
 package seda.nbio;
 
+import seda.util.Tracer;
 import java.io.*;
 
 /**
@@ -31,6 +32,8 @@ import java.io.*;
  * nonblocking sockets.
  */
 class NonblockingSocketOutputStream extends NonblockingOutputStream {
+
+  private static final boolean PROFILE = false;
 
   private NBIOFileDescriptor fd;
   private boolean eof;
@@ -145,8 +148,11 @@ class NonblockingSocketOutputStream extends NonblockingOutputStream {
    * Use write() to perform a blocking write.
    */
   public int nbWrite(byte b[], int off, int len) throws IOException {
+    if (PROFILE) SelectSet.tracer.trace("nbWrite called");
+
     if (eof) throw new EOFException("EOF on "+toString());
     int n = nbSocketWrite(b, off, len);
+    if (PROFILE) SelectSet.tracer.trace("nbSocketWrite returned");
     if (n < 0) {
       eof = true;
       throw new EOFException("EOF on "+toString());

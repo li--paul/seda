@@ -62,9 +62,19 @@ public interface StageWrapperIF {
   public StageStatsIF getStats();
 
   /**
-   * Return a ResponseTimeControllerIF for this stage.
+   * Return the response time controller for this stage.
    */
   public ResponseTimeControllerIF getResponseTimeController();
+
+  /**
+   * Return the batch sorter for this stage.
+   */
+  public BatchSorterIF getBatchSorter();
+
+  /**
+   * Set the batch sorter for this stage.
+   */
+  public void setBatchSorter(BatchSorterIF sorter);
 
   /**
    * Initialize this stage.

@@ -26,6 +26,7 @@ package seda.sandStorm.lib.aSocket;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.core.*;
+import seda.util.*;
 
 import java.net.*;
 import java.io.*;
@@ -37,8 +38,12 @@ import java.util.*;
 class ReadEventHandler extends aSocketEventHandler implements EventHandlerIF {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
+
+  static Tracer tracer;
 
   ReadEventHandler() {
+    if (PROFILE) tracer = new Tracer("aSocket ReadEH");
   }
 
   public void init(ConfigDataIF config) {
@@ -48,7 +53,6 @@ class ReadEventHandler extends aSocketEventHandler implements EventHandlerIF {
   }
 
   private void processReadRequest(aSocketRequest req) throws IOException {
-
     if (req instanceof ATcpStartReadRequest) {
       ATcpStartReadRequest srreq = (ATcpStartReadRequest)req;
       SockState ss = srreq.conn.sockState;
@@ -66,18 +70,24 @@ class ReadEventHandler extends aSocketEventHandler implements EventHandlerIF {
 
   public void handleEvent(QueueElementIF qel) {
     if (DEBUG) System.err.println("ReadEventHandler: Got QEL: "+qel);
+    if (PROFILE) tracer.trace("ReadEH handleEvent");
 
     try {
       if (qel instanceof SelectQueueElement) {
         Object attach = ((SelectQueueElement)qel).getAttachment();
+        if (PROFILE) tracer.trace("ReadEH got attach");
 	if (attach instanceof SockState) {
 	  SockState ss = (SockState)attach;
 	  if (DEBUG) System.err.println("ReadEventHandler: ss is "+ss);
+          if (PROFILE) tracer.trace("TCP ss.doRead()");
 	  ss.doRead();
+          if (PROFILE) tracer.trace("TCP ss.doRead() done");
 	} else {
 	  DatagramSockState ss = (DatagramSockState)attach;
 	  if (DEBUG) System.err.println("ReadEventHandler: ss is "+ss);
+          if (PROFILE) tracer.trace("UDP ss.doRead()");
 	  ss.doRead();
+          if (PROFILE) tracer.trace("UDP ss.doRead() done");
 	}
 	if (DEBUG) System.err.println("ReadEventHandler: returned from doRead");
 
@@ -92,6 +102,7 @@ class ReadEventHandler extends aSocketEventHandler implements EventHandlerIF {
       System.err.println("ReadEventHandler: Got exception: "+e);
       e.printStackTrace();
     }
+    if (PROFILE) tracer.trace("ReadEH handleEvent done");
   }
 
   public void handleEvents(QueueElementIF qelarr[]) {

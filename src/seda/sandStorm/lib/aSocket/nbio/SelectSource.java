@@ -27,6 +27,7 @@ package seda.sandStorm.lib.aSocket.nbio;
 import seda.nbio.*;
 import seda.sandStorm.api.*;
 import seda.sandStorm.lib.aSocket.*;
+import seda.util.*;
 
 import java.net.*;
 import java.io.*;
@@ -47,6 +48,7 @@ import java.util.*;
 public class SelectSource implements SelectSourceIF {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
 
   private SelectSet selset;
   private SelectItem ready[];
@@ -57,6 +59,7 @@ public class SelectSource implements SelectSourceIF {
   private int balancer_seq[];
   private int balancer_seq_off;
   private Object blocker;
+  private Tracer tracer;
 
   // XXX MDW HACKING
   public Object getSelectSet() {
@@ -85,6 +88,7 @@ public class SelectSource implements SelectSourceIF {
     this.do_balance = do_balance;
 
     if (DEBUG) System.err.println("SelectSource created, do_balance = "+do_balance);
+    if (PROFILE) tracer = new Tracer("NBIO SelectSource <"+selset.hashCode()+">");
 
     if (do_balance) initBalancer();
   }
@@ -288,10 +292,12 @@ public class SelectSource implements SelectSourceIF {
    * after that time. A timeout of -1 blocks forever.
    */
   public QueueElementIF[] blocking_dequeue_all(int timeout_millis) {
+    if (PROFILE) tracer.trace("blocking_dequeue_all called");
 
     if (selset.size() == 0) {
       if (timeout_millis == 0) return null;
       // Wait for something to be registered
+      if (PROFILE) tracer.trace(" bdqa: blocking");
       synchronized (blocker) {
 	if (timeout_millis == -1) {
 	  try {
@@ -305,16 +311,20 @@ public class SelectSource implements SelectSourceIF {
 	  }
 	}
       }
+      if (PROFILE) tracer.trace(" bdqa: done blocking");
     }
 
     if ((ready_size == 0) || (ready_offset == ready_size)) {
       doPoll(timeout_millis);
     } 
     if (ready_size == 0) return null;
+
+    if (PROFILE) tracer.trace(" bdqa: fill in ret[]");
     SelectQueueElement ret[] = new SelectQueueElement[ready_size-ready_offset];
     for (int i = 0; i < ret.length; i++) {
       ret[i] = new SelectQueueElement(ready[ready_offset++]);
     }
+    if (PROFILE) tracer.trace(" bdqa: done fill in ret[]");
     return ret;
   }
 
@@ -358,18 +368,24 @@ public class SelectSource implements SelectSourceIF {
   // Actually performs the poll and sets ready[], ready_off, ready_size
   private void doPoll(int timeout) {
     if (DEBUG) System.err.println("SelectSource: Doing poll, timeout "+timeout);
+    if (PROFILE) tracer.trace("doPoll called");
     int c = selset.select(timeout);
     if (DEBUG) System.err.println("SelectSource: poll returned "+c);
     if (c > 0) {
+      if (PROFILE) tracer.trace("select returned nonzero");
       SelectItem ret[] = selset.getEvents();
+      if (PROFILE) tracer.trace("getEvents() return");
       if (ret != null) {
 	// XXX We can't get ret == null if doPoll() is synchronized with 
 	// deregister() - but I'm not sure I want to do that
 	ready_offset = 0; ready_size = ret.length;
+        if (PROFILE) tracer.trace("calling balance");
 	balance(ret);
+        if (PROFILE) tracer.trace("balance return");
 	return;
       }
     }
+    if (PROFILE) tracer.trace("select returned zero");
     // Didn't get anything
     ready = null; ready_offset = ready_size = 0;
   }

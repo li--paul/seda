@@ -33,6 +33,9 @@ import java.util.Vector;
  * @see SelectSet
  */
 class SelectSetPollImpl extends SelectSetImpl {
+
+  private static final boolean PROFILE = false;
+
   private Vector vec;
   private SelectItem itemarr[];
   private boolean needUpdate = false;
@@ -188,6 +191,8 @@ class SelectSetPollImpl extends SelectSetImpl {
    * @return The number of events received, or 0 if no events occurred.
    */
   int select(int timeout) {
+    if (PROFILE) SelectSet.tracer.trace("SSPI "+hashCode()+" select() called");
+
     synchronized (this) {
       if (needUpdate) {
         itemarrupdate();

@@ -26,6 +26,7 @@ package seda.sandStorm.lib.aSocket;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.core.*;
+import seda.util.*;
 
 import java.net.*;
 import java.io.*;
@@ -37,8 +38,12 @@ import java.util.*;
 class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, aSocketConst {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
+
+  static Tracer tracer;
 
   WriteEventHandler() {
+    if (PROFILE) tracer = new Tracer("aSocket WriteEH");
   }
 
   public void init(ConfigDataIF config) {
@@ -74,7 +79,7 @@ class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, a
 
     // Avoid doing too many things on each socket
     int num_reqs_processed = 0;
-    while (ss.writeReqList != null  &&   // JRVB: this can happen if someone closes the socket while we are processing writes.
+    while (ss.writeReqList != null  &&   
            ((req = (aSocketRequest)ss.writeReqList.get_head()) != null) &&
 	(++num_reqs_processed < MAX_WRITE_REQS_PER_SOCKET)) {
 
@@ -90,6 +95,7 @@ class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, a
 
 	if (ss.cur_write_req == null) {
 	  if (DEBUG) System.err.println("WriteEventHandler: Doing initWrite");
+          if (PROFILE) tracer.trace("initWrite called");
 	  ss.initWrite((ATcpWriteRequest)req);
 	}
 
@@ -114,7 +120,9 @@ class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, a
 	if (done) {
 	  if (DEBUG) System.err.println("WriteEventHandler: Finished write");
 	  // Finished this write
+          if (PROFILE) tracer.trace("writeReset");
 	  ss.writeReset();
+          if (PROFILE) tracer.trace("writeReset return");
 
 	  // Send completion upcall
 	  SinkIF cq = wreq.buf.getCompletionQueue();
@@ -322,6 +330,8 @@ class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, a
     } else if (req instanceof ATcpWriteRequest) {
 
       if (DEBUG) System.err.println("WriteEventHandler: got write request: " + req);
+      if (PROFILE) tracer.trace("processWriteRequest (TCP)");
+
       SockState ss = ((ATcpWriteRequest)req).conn.sockState;
 
       // If already closed, just drop it
@@ -338,6 +348,7 @@ class WriteEventHandler extends aSocketEventHandler implements EventHandlerIF, a
 	  }
 	} else {
             if (DEBUG) System.err.println("WriteEventHandler: " + ss.outstanding_writes + " outstanding writes" );
+            if (PROFILE) tracer.trace("done enqueue writereq");
         }
       }
 

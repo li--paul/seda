@@ -56,7 +56,6 @@ class ListenEventHandler extends aSocketEventHandler implements EventHandlerIF {
 
     // Try to do as many accepts as we can in one go
     while (numAccepted++ < aSocketConst.MAX_ACCEPTS_AT_ONCE) {
-      // XXX: must check this.
       sock = lss.accept();
 
       if (sock == null) break;

@@ -57,11 +57,13 @@ import java.util.Vector;
 public class SelectSet {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
 
   private SelectSetImpl impl;
   private static final int POLL_IMPL = 0;
   private static final int DEVPOLL_IMPL = 1;
   private static int IMPL_TO_USE;
+  static seda.util.Tracer tracer;
 
   static {
     NonblockingSocket.loadNativeLibrary();
@@ -88,6 +90,7 @@ public class SelectSet {
 	throw new UnsatisfiedLinkError("No SelectSetImpl supported on this platform!");
       }
     }
+    if (PROFILE) tracer = new seda.util.Tracer("NBIO");
   }
 
   /**

@@ -49,10 +49,8 @@ public class ThreadPool implements ProfilableIF {
 
   int minThreads, maxThreads;
 
-  private int maxAggregation;
   private int blockTime = 1000; 
   private int idleTimeThreshold;
-  private AggThrottle aggThrottle;
 
   /**
    * Create a thread pool for the given stage, manager and runnable,
@@ -66,12 +64,6 @@ public class ThreadPool implements ProfilableIF {
     this.runnable = runnable;
 
     SandstormConfig config = mgr.getConfig();
-    if (config.getBoolean("global.batchController.enable")) {
-      aggThrottle = new AggThrottle(stage, mgr);
-    } else {
-      this.maxAggregation = config.getInt("global.batchController.maxBatch");
-    }
-
     threads = new Vector();
     stoppedThreads = new Vector();
 
@@ -119,12 +111,6 @@ public class ThreadPool implements ProfilableIF {
     this.runnable = runnable;
 
     SandstormConfig config = mgr.getConfig();
-    if (config.getBoolean("global.batchController.enable")) {
-      aggThrottle = new AggThrottle(stage, mgr);
-    } else {
-      this.maxAggregation = config.getInt("global.batchController.maxBatch");
-    }
-
     threads = new Vector();
     stoppedThreads = new Vector();
     if (initialThreads < 1) initialThreads = 1;
@@ -134,6 +120,8 @@ public class ThreadPool implements ProfilableIF {
     //if (this.maxThreads < 1) this.maxThreads = initialThreads;
     this.blockTime = blockTime;
     this.idleTimeThreshold = idleTimeThreshold;
+
+    System.err.println("TP <"+poolname+">: initial "+initialThreads+", min "+minThreads+", max "+maxThreads+", blockTime "+blockTime+", idleTime "+idleTimeThreshold);
 
     addThreads(initialThreads, false);
     mgr.getProfiler().add("ThreadPool <"+poolname+">", this);
@@ -152,15 +140,12 @@ public class ThreadPool implements ProfilableIF {
     this.runnable = runnable;
 
     SandstormConfig config = mgr.getConfig();
-    if (config.getBoolean("global.batchController.enable")) {
-      aggThrottle = new AggThrottle(stage, mgr);
-    } else {
-      this.maxAggregation = config.getInt("global.batchController.maxBatch");
-    }
-
     threads = new Vector();
     stoppedThreads = new Vector();
     maxThreads = minThreads = numThreads;
+
+    System.err.println("TP <"+poolname+">: initial "+numThreads+", min "+minThreads+", max "+maxThreads+", blockTime "+blockTime+", idleTime "+idleTimeThreshold);
+
     addThreads(numThreads, false);
     mgr.getProfiler().add("ThreadPool <"+poolname+">", this);
     pooltg = new ThreadGroup("TP <"+poolname+">");
@@ -170,12 +155,7 @@ public class ThreadPool implements ProfilableIF {
    * Start the thread pool.
    */
   public void start() {
-    System.err.print("TP <"+poolname+">: Starting "+numThreads()+" threads");
-    if (aggThrottle != null) {
-      System.err.println(", batchController enabled");
-    } else {
-      System.err.println(", maxBatch="+maxAggregation);
-    }
+    System.err.println("TP <"+poolname+">: Starting "+numThreads()+" threads");
     for (int i = 0; i < threads.size(); i++) {
       Thread t = (Thread)threads.elementAt(i);
       t.start();
@@ -253,17 +233,6 @@ public class ThreadPool implements ProfilableIF {
    */
   public long getBlockTime() {
     return blockTime;
-  }
-
-  /**
-   * Used by a thread to request its aggregation target from the pool.
-   */
-  public synchronized int getAggregationTarget() {
-    if (aggThrottle != null) {
-      return aggThrottle.getAggTarget();
-    } else {
-      return maxAggregation;
-    }
   }
 
   /**

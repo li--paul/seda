@@ -203,8 +203,8 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     EventHandlerIF evHandler = (EventHandlerIF)theclass.newInstance();
     System.out.println("Sandstorm: Loaded "+stagename+" from "+classname);
 
-    StageWrapper wrapper = new StageWrapper((ManagerIF)this, stagename, evHandler, config, 
-	defaulttm, descr.queueThreshold);
+    StageWrapper wrapper = new StageWrapper((ManagerIF)this, 
+	stagename, evHandler, config, defaulttm, descr.queueThreshold);
 
     createStage(wrapper, false);
   }
@@ -220,8 +220,8 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
       // Come up with a better (random) name
       stageName = stageName+"-"+stagetbl.size();
     }
-    StageWrapperIF wrapper = new StageWrapper((ManagerIF)this, stageName, evHandler, 
-	config, defaulttm);
+    StageWrapperIF wrapper = new StageWrapper((ManagerIF)this, 
+	stageName, evHandler, config, defaulttm);
 
     return createStage(wrapper, true);
   }

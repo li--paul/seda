@@ -58,8 +58,7 @@ class AggThrottle {
 
   private static final int ADJUST_DELAY = 5;
 
-  private int minAggregation = 8;
-//  private int maxAggregation = -1;
+  private int minAggregation = 2;
   private int maxAggregation = 1000;
   private int recalcWindow = 1000;
   private double smoothConst = 0.7;
@@ -84,8 +83,8 @@ class AggThrottle {
 	minAggregation);
     this.maxAggregation = config.getInt("global.batchController.maxBatch", 
 	maxAggregation);
-//    this.recalcWindow = config.getInt("global.batchController.recalcWindow",
-//	recalcWindow);
+    this.recalcWindow = config.getInt("global.batchController.recalcWindow",
+	recalcWindow);
     this.smoothConst = config.getDouble("global.batchController.smoothConst",
 	smoothConst);
 
@@ -134,11 +133,6 @@ class AggThrottle {
     if (time_elapsed < recalcWindow) {
       return aggregationTarget;
     }
-
-//    measurementCount++;
-//    if ((measurementCount % recalcWindow) != 0) {
-//      return aggregationTarget;
-//    }
 
     long events = stage.getStats().getTotalEvents();
     long curEvents = events - lastEvents;

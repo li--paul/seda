@@ -42,6 +42,7 @@ class AFileTPStageWrapper implements StageWrapperIF {
   private EventHandlerIF handler;
   private ConfigDataIF config;
   private ThreadManagerIF tm;
+  private BatchSorterIF sorter;
 
   // This stagewrapper has no (real) event queue: Threads created
   // by AFileTPTM will poll across the per-AFile queues instead.
@@ -52,6 +53,7 @@ class AFileTPStageWrapper implements StageWrapperIF {
     this.handler = handler;
     this.config = config;
     this.tm = tm;
+    this.sorter = new NullBatchSorter();
     this.stage = new Stage(name, this, null, config);
     this.config.setStage(this.stage);
   }
@@ -110,6 +112,16 @@ class AFileTPStageWrapper implements StageWrapperIF {
   /** Not implemented. */
   public ResponseTimeControllerIF getResponseTimeController() {
     return null;
+  }
+
+  /** Not implemented. */
+  public void setBatchSorter(BatchSorterIF sorter) {
+    return;
+  }
+
+  /** Return the batch sorter. */
+  public BatchSorterIF getBatchSorter() {
+    return sorter;
   }
 
 

@@ -26,6 +26,7 @@ package seda.sandStorm.internal;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.api.internal.*;
+import seda.sandStorm.main.*;
 import seda.sandStorm.core.*;
 import java.util.*;
 
@@ -38,6 +39,7 @@ import java.util.*;
 
 class StageWrapper implements StageWrapperIF {
 
+  private ManagerIF mgr;
   private String name;
   private StageIF stage;
   private EventHandlerIF handler;
@@ -46,21 +48,21 @@ class StageWrapper implements StageWrapperIF {
   private ThreadManagerIF threadmgr;
   private StageStatsIF stats;
   private ResponseTimeControllerIF rtcon;
+  private BatchSorterIF sorter;
 
   /**
    * Create a StageWrapper with the given name, handler, config data, and 
    * thread manager.
    */
   StageWrapper(ManagerIF mgr, String name, EventHandlerIF handler, ConfigDataIF config, ThreadManagerIF threadmgr) {
+    this.mgr = mgr;
     this.name = name;
     this.handler = handler;
     this.config = config;
     this.threadmgr = threadmgr;
-    eventQ = new FiniteQueue(name);
-    this.stats = new StageStats(this);
-    this.stage = new Stage(name, this, (SinkIF)eventQ, config);
-    config.setStage(this.stage);
-    createRTController(mgr);
+    this.eventQ = new FiniteQueue(name);
+
+    setup();
   }
 
   /**
@@ -68,41 +70,61 @@ class StageWrapper implements StageWrapperIF {
    * manager, and queue threshold.
    */
   StageWrapper(ManagerIF mgr, String name, EventHandlerIF handler, ConfigDataIF config, ThreadManagerIF threadmgr, int queueThreshold) {
+    this.mgr = mgr;
     this.name = name;
     this.handler = handler;
     this.config = config;
     this.threadmgr = threadmgr;
-    this.stats = new StageStats(this);
-    this.rtcon = null;
 
-    eventQ = new FiniteQueue(name);
+    this.eventQ = new FiniteQueue(name);
     QueueThresholdPredicate pred = new QueueThresholdPredicate(eventQ, queueThreshold);
     eventQ.setEnqueuePredicate(pred);
 
-    this.stage = new Stage(name, this, (SinkIF)eventQ, config);
-    config.setStage(this.stage);
-    createRTController(mgr);
+    setup();
   }
 
-  private void createRTController(ManagerIF mgr) {
+  // Internal initialization
+  private void setup() {
+    System.err.print("Creating Stage <"+name+">");
+
+    SandstormConfig mgrcfg = mgr.getConfig();
+
+    if (mgrcfg.getBoolean("global.batchController.enable")) {
+      System.err.print(", batch controller enabled");
+      this.sorter = new AggThrottleBatchSorter();
+    } else {
+      this.sorter = new NullBatchSorter();
+    }
+
+    this.stats = new StageStats(this);
+    this.stage = new Stage(name, this, (SinkIF)eventQ, config);
+    config.setStage(this.stage);
+
     boolean rtControllerEnabled = mgr.getConfig().getBoolean("global.rtController.enable");
     String deftype = mgr.getConfig().getString("global.rtController.type");
     if (mgr.getConfig().getBoolean("stages."+name+".rtController.enable", rtControllerEnabled)) {
+      System.err.print("response time controller type ");
       String contype = mgr.getConfig().getString("stages."+name+".rtController.type", deftype);
       if (contype == null) {
+	System.err.print("direct");
 	this.rtcon = new ResponseTimeControllerDirect(mgr, this);
       } else if (contype.equals("direct")) {
+	System.err.print("direct");
 	this.rtcon = new ResponseTimeControllerDirect(mgr, this);
       } else if (contype.equals("mm1")) {
+	System.err.print("mm1");
 	this.rtcon = new ResponseTimeControllerMM1(mgr, this);
       } else if (contype.equals("pid")) {
+	System.err.print("pid");
 	this.rtcon = new ResponseTimeControllerPID(mgr, this);
       } else if (contype.equals("multiclass")) {
+	System.err.print("multiclass");
 	this.rtcon = new ResponseTimeControllerMulticlass(mgr, this);
       } else {
 	throw new RuntimeException("StageWrapper <"+name+">: Bad response time controller type "+contype);
       }
     }
+    System.err.println("");
   }
 
   /**
@@ -162,6 +184,20 @@ class StageWrapper implements StageWrapperIF {
    */
   public ResponseTimeControllerIF getResponseTimeController() {
     return rtcon;
+  }
+
+  /**
+   * Set the batch sorter.
+   */
+  public void setBatchSorter(BatchSorterIF sorter) {
+    this.sorter = sorter;
+  }
+
+  /**
+   * Return the batch sorter.
+   */
+  public BatchSorterIF getBatchSorter() {
+    return sorter;
   }
 
   public String toString() {

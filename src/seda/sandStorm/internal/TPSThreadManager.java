@@ -110,19 +110,39 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
 
     protected ThreadPool tp;
     protected StageWrapperIF wrapper;
+    protected BatchSorterIF sorter;
+    protected EventHandlerIF handler;
     protected SourceIF source;
     protected String name;
     protected ResponseTimeControllerIF rtController = null;
     protected boolean firstToken = false;
-    protected int aggTarget = -1;
+    protected int blockTime = -1;
 
     protected stageRunnable(StageWrapperIF wrapper, ThreadPool tp) {
       this.wrapper = wrapper;
       this.tp = tp;
+      this.init();
+    }
+
+    protected stageRunnable(StageWrapperIF wrapper) {
+      this.wrapper = wrapper;
+      // Create a threadPool for the stage
+      if (wrapper.getEventHandler() instanceof SingleThreadedEventHandlerIF) {
+	tp = new ThreadPool(wrapper, mgr, this, 1);
+      } else {
+	tp = new ThreadPool(wrapper, mgr, this);
+      }
+      this.init();
+    }
+
+    private void init() {
       this.source = wrapper.getSource();
+      this.handler = wrapper.getEventHandler();
       this.name = wrapper.getStage().getName();
+      this.rtController = wrapper.getResponseTimeController();
 
       if (tp != null) {
+	blockTime = (int)tp.getBlockTime();
 	if (sizeController != null) {
   	  // The sizeController is globally enabled -- has the user disabled
   	  // it for this stage?
@@ -132,42 +152,20 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
   	  }
    	}
       }
-      this.rtController = wrapper.getResponseTimeController();
+
+      this.sorter = wrapper.getBatchSorter();
+      if (this.sorter == null) {
+	// XXX MDW: Should be ControlledBatchSorter
+	this.sorter = new NullBatchSorter(); 
+      }
+      sorter.init(wrapper, mgr);
 
       if (tp != null) tp.start();
     }
 
-    protected stageRunnable(StageWrapperIF wrapper) {
-      this.wrapper = wrapper;
-      this.tp = tp;
-      this.source = wrapper.getSource();
-      this.name = wrapper.getStage().getName();
-
-      // Create a threadPool for the stage
-      if (wrapper.getEventHandler() instanceof SingleThreadedEventHandlerIF) {
-	tp = new ThreadPool(wrapper, mgr, this, 1);
-      } else {
-	tp = new ThreadPool(wrapper, mgr, this);
-      }
-
-      if (sizeController != null) {
-	// The sizeController is globally enabled -- has the user disabled
-	// it for this stage?
-	String val = config.getString("stages."+this.name+".threadPool.sizeController.enable");
-	if ((val == null) || val.equals("true") || val.equals("TRUE")) {
-	  sizeController.register(wrapper, tp);
-	}
-      }
-      this.rtController = wrapper.getResponseTimeController();
-
-      tp.start();
-    }
-
     public void run() {
-      int blockTime;
       long t1, t2;
       long tstart = 0, tend = 0;
-      boolean isFirst = false;
 
       if (DEBUG) System.err.println(name+": starting, source is "+source);
 
@@ -175,35 +173,40 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
 
       while (true) {
 
-	synchronized (this) {
-  	  if (firstToken == false) {
-  	    firstToken = true; isFirst = true;
-  	  }
-   	}
-	
        	try {
-
-	  blockTime = (int)tp.getBlockTime();
-	  aggTarget = tp.getAggregationTarget();
-
 	  if (DEBUG_VERBOSE) System.err.println(name+": Doing blocking dequeue for "+wrapper);
 
-	  QueueElementIF fetched[];
-	  if (aggTarget == -1) {
-	    if (DEBUG_VERBOSE) System.err.println("TPSTM <"+this.name+"> dequeue (aggTarget -1)");
-  	    fetched = source.blocking_dequeue_all(blockTime);
-          } else {
-	    if (DEBUG_VERBOSE) System.err.println("TPSTM <"+this.name+"> dequeue (aggTarget "+aggTarget+")");
-  	    fetched = source.blocking_dequeue(blockTime, aggTarget);
+	  Thread.currentThread().yield();
+
+	  // Run any pending batches
+	  boolean ranbatch = false;
+	  BatchDescrIF batch;
+
+	  while ((batch = sorter.nextBatch(blockTime)) != null) {
+	    ranbatch = true;
+	    QueueElementIF events[] = batch.getBatch();
+	    if (DEBUG_VERBOSE) System.err.println("<"+name+">: Got batch of "+events.length+" events");
+
+	    // Call event handler
+	    tstart = System.currentTimeMillis();
+	    handler.handleEvents(events);
+	    batch.batchDone();
+	    tend = System.currentTimeMillis();
+
+	    // Record service rate 
+	    wrapper.getStats().recordServiceRate(events.length, tend-tstart);
+
+	    // Run response time controller 
+	    if (rtController != null) {
+	      rtController.adjustThreshold(events, tend-tstart);
+	    }
 	  }
 
-	  if (fetched == null) {
+	  // Check if idle
+	  if (!ranbatch) {
 	    t2 = System.currentTimeMillis();
 	    if (tp.timeToStop(t2-t1)) {
 	      if (DEBUG) System.err.println(name+": Exiting");
-	      if (isFirst) {
-		synchronized (this) { firstToken = false; }
-	      }
 	      return;
 	    }
 	    continue;
@@ -211,34 +214,10 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
 
 	  t1 = System.currentTimeMillis();
 
-	  if (DEBUG_VERBOSE) System.err.println(name+": Got "+fetched.length+" elements for "+wrapper);
-
-	  /* Process events */
-	  tstart = System.currentTimeMillis();
-	  wrapper.getEventHandler().handleEvents(fetched);
-	  tend = System.currentTimeMillis();
-
-	  /* Record service rate */
-	  ((StageWrapper)wrapper).getStats().recordServiceRate(fetched.length, tend-tstart);
-
-	  /* Run response time controller controller */
-	  if (rtController != null) {
-	    if (rtController instanceof ResponseTimeControllerMM1) {
-	      ((ResponseTimeControllerMM1)rtController).adjustThreshold(fetched, tstart, tend, isFirst, tp.numThreads());
-	    } else {
-	      rtController.adjustThreshold(fetched, tend-tstart);
-	    }
-	  }
-
 	  if (tp.timeToStop(0)) {
 	    if (DEBUG) System.err.println(name+": Exiting");
-	    if (isFirst) {
-      	      synchronized (this) { firstToken = false; }
-	    }
 	    return;
 	  }
-
-	  Thread.currentThread().yield();
 
 	} catch (Exception e) {
 	  System.err.println("Sandstorm: Stage <"+name+"> got exception: "+e);

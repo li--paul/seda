@@ -43,8 +43,9 @@ class aSocketStageWrapper implements StageWrapperIF {
   private SelectSourceIF selsource;
   private ThreadManagerIF tm;
   private StageStatsIF stats;
+  private BatchSorterIF sorter;
 
-  aSocketStageWrapper(String name, EventHandlerIF handler, ConfigDataIF config, ThreadManagerIF tm) {
+  aSocketStageWrapper(ManagerIF mgr, String name, EventHandlerIF handler, ConfigDataIF config, ThreadManagerIF tm) {
     this.name = name;
     this.handler = handler;
     this.config = config;
@@ -62,6 +63,13 @@ class aSocketStageWrapper implements StageWrapperIF {
       QueueThresholdPredicate pred = new QueueThresholdPredicate(eventQ, queuelen);
       eventQ.setEnqueuePredicate(pred);
     }
+
+    if (mgr.getConfig().getBoolean("global.batchController.enable")) {
+      this.sorter = new AggThrottleBatchSorter();
+    } else {
+      this.sorter = new NullBatchSorter();
+    }
+
     this.selsource = ((aSocketEventHandler)handler).getSelectSource();
     this.stage = new Stage(name, this, (SinkIF)eventQ, config);
     this.config.setStage(this.stage);
@@ -125,6 +133,15 @@ class aSocketStageWrapper implements StageWrapperIF {
 
   public StageStatsIF getStats() {
     return stats;
+  }
+
+  /** Not implemented. */
+  public void setBatchSorter(BatchSorterIF sorter) {
+    return;
+  }
+
+  public BatchSorterIF getBatchSorter() {
+    return sorter;
   }
 
   /** Not implemented. */

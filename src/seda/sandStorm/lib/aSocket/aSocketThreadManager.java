@@ -29,6 +29,7 @@ import seda.sandStorm.api.internal.*;
 import seda.sandStorm.core.*;
 import seda.sandStorm.internal.*;
 import seda.sandStorm.main.*;
+import seda.util.*;
 import java.util.*;
 
 /**
@@ -40,6 +41,7 @@ import java.util.*;
 class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
 
   private ManagerIF mgr;
 
@@ -87,6 +89,8 @@ class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
     protected SourceIF eventQ;
     protected String name;
     protected EventHandlerIF handler;
+    protected BatchSorterIF sorter;
+    protected Tracer tracer;
 
     protected aSocketThread(aSocketStageWrapper wrapper) {
       if (DEBUG) System.err.println("!!!!!aSocketThread init");
@@ -95,6 +99,16 @@ class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
       this.selsource = wrapper.getSelectSource();
       this.eventQ = wrapper.getEventQueue();
       this.handler = wrapper.getEventHandler();
+      this.sorter = wrapper.getBatchSorter();
+      sorter.init(wrapper, mgr);
+
+      if (PROFILE) {
+	if (name.indexOf("WriteStage") != -1) {
+	  this.tracer = WriteEventHandler.tracer;
+	} else {
+	  this.tracer = new Tracer(name);
+	}
+      }
     }
 
     void registerTP(ThreadPool tp) {
@@ -102,68 +116,68 @@ class aSocketThreadManager implements ThreadManagerIF, aSocketConst {
     }
 
     public void run() {
-      int aggTarget;
       if (DEBUG) System.err.println(name+": starting, selsource="+ selsource +", eventQ="+eventQ
           + ", handler=" + handler);
 
       while (true) {
 
+	Thread.currentThread().yield();
+
         if (DEBUG) System.err.println(name+": Looping in run()");
 	try {
 
-	  aggTarget = tp.getAggregationTarget();
-
 	  while (selsource != null && selsource.numActive() == 0) {
 	    if (DEBUG) System.err.println(name+": numActive is zero, waiting on event queue");
-	    QueueElementIF qelarr[];
-	    if (aggTarget == -1) {
-	      qelarr = eventQ.blocking_dequeue_all(EVENT_QUEUE_TIMEOUT);
-	    } else {
-	      qelarr = eventQ.blocking_dequeue(EVENT_QUEUE_TIMEOUT, aggTarget);
-	    }
 
-	    if (qelarr != null) {
+	    if (PROFILE) tracer.trace("sorter.nextBatch");
+	    BatchDescrIF batch = sorter.nextBatch(EVENT_QUEUE_TIMEOUT);
+	    if (batch != null) {
+	      QueueElementIF qelarr[] = batch.getBatch();
 	      if (DEBUG) System.err.println(name+": got "+qelarr.length+" new requests");
-	      handler.handleEvents(qelarr);
+	      if (PROFILE) tracer.trace("sorter.nextBatch return non-null");
+      	      handler.handleEvents(qelarr);
+	      if (PROFILE) tracer.trace("handle batch return");
+	    } else {
+	      if (PROFILE) tracer.trace("sorter.nextBatch return null");
 	    }
 	  }
 
 	  for (int s = 0; s < SELECT_SPIN; s++) {
 	    if (DEBUG) System.err.println(name+": doing select, numActive "+selsource.numActive());
 	    SelectQueueElement ret[];
-
-	    if (aggTarget == -1) {
-	      ret = (SelectQueueElement[])selsource.blocking_dequeue_all(SELECT_TIMEOUT);
-	    } else {
-	      ret = (SelectQueueElement[])selsource.blocking_dequeue(SELECT_TIMEOUT, aggTarget);
-	    }
-
+	    if (PROFILE) tracer.trace("selsource.blocking_dequeue_all");
+	    ret = (SelectQueueElement[])selsource.blocking_dequeue_all(SELECT_TIMEOUT);
 	    if (ret != null) {
 	      if (DEBUG) System.err.println(name+": select got "+ret.length+" elements");
+	      if (PROFILE) tracer.trace("selsource return non-null");
+
 	      long tstart = System.currentTimeMillis();
 	      handler.handleEvents(ret);
 	      long tend = System.currentTimeMillis();
 	      wrapper.getStats().recordServiceRate(ret.length, tend-tstart);
 
-	    } else if (DEBUG) System.err.println(name+": select got null");
+	    } else {
+	      if (DEBUG) System.err.println(name+": select got null");
+	      if (PROFILE) tracer.trace("selsource return null");
+	    }
 	  }
 
 	  if (DEBUG) System.err.println(name+": Checking request queue");
 	  for (int s = 0; s < EVENT_QUEUE_SPIN; s++) {
-	    QueueElementIF qelarr[];
-	    if (aggTarget == -1) {
-	      qelarr = eventQ.dequeue_all();
-	    } else {
-	      qelarr = eventQ.dequeue(aggTarget);
-	    }
-	    if (qelarr != null) {
+	    if (PROFILE) tracer.trace("eventq nextBatch");
+	    BatchDescrIF batch = sorter.nextBatch(0);
+	    if (batch != null) {
+	      if (PROFILE) tracer.trace("eventq nextBatch ret non-null");
+	      QueueElementIF qelarr[] = batch.getBatch();
 	      if (DEBUG) System.err.println(name+": got "+qelarr.length+" new requests");
 	      handler.handleEvents(qelarr);
+	      if (PROFILE) tracer.trace("eventq nextBatch handler done");
 	      break;
+	    } else {
+	      if (PROFILE) tracer.trace("eventq nextBatch ret null");
+	      //Thread.currentThread().yield();
 	    }
 	  }
-
-	  Thread.currentThread().yield();
 
 	} catch (Exception e) {
 	  System.err.println(name+": got exception "+e);

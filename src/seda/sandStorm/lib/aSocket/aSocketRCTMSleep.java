@@ -73,7 +73,6 @@ class aSocketRCTMSleep extends aSocketThreadManager implements ThreadManagerIF, 
       int num_measurements = 0, num_events = 0;
       long sleeptime = INITIAL_SLEEPTIME;
       int sleepfreq = INITIAL_SLEEPFREQ;
-      int aggTarget;
 
       t1 = System.currentTimeMillis();
 
@@ -81,17 +80,12 @@ class aSocketRCTMSleep extends aSocketThreadManager implements ThreadManagerIF, 
 
 	try {
 
-	  aggTarget = tp.getAggregationTarget();
-
 	  while (selsource.numActive() == 0) {
 	    if (DEBUG) System.err.println(name+": numActive is zero, waiting on event queue");
-	    QueueElementIF qelarr[];
-	    if (aggTarget == -1) {
-	      qelarr = eventQ.blocking_dequeue_all(EVENT_QUEUE_TIMEOUT);
-	    } else {
-	      qelarr = eventQ.blocking_dequeue(EVENT_QUEUE_TIMEOUT, aggTarget);
-	    }
-	    if (qelarr != null) {
+
+	    BatchDescrIF batch;
+	    while ((batch = sorter.nextBatch(EVENT_QUEUE_TIMEOUT)) != null) {
+	      QueueElementIF qelarr[] = batch.getBatch();
 	      if (DEBUG) System.err.println(name+": got "+qelarr.length+" new requests");
 	      num_events += qelarr.length;
 	      handler.handleEvents(qelarr);
@@ -101,11 +95,7 @@ class aSocketRCTMSleep extends aSocketThreadManager implements ThreadManagerIF, 
 	  for (int s = 0; s < SELECT_SPIN; s++) {
 	    if (DEBUG) System.err.println(name+": doing select, numActive "+selsource.numActive());
 	    SelectQueueElement ret[];
-	    if (aggTarget == -1) {
-	      ret = (SelectQueueElement[])selsource.blocking_dequeue_all(SELECT_TIMEOUT);
-	    } else {
-	      ret = (SelectQueueElement[])selsource.blocking_dequeue(SELECT_TIMEOUT, aggTarget);
-	    }
+	    ret = (SelectQueueElement[])selsource.blocking_dequeue_all(SELECT_TIMEOUT);
 	    if (ret != null) {
 	      if (DEBUG) System.err.println(name+": select got "+ret.length+" elements");
 	      num_events += ret.length;
@@ -115,13 +105,9 @@ class aSocketRCTMSleep extends aSocketThreadManager implements ThreadManagerIF, 
 
 	  if (DEBUG) System.err.println(name+": Checking request queue");
 	  for (int s = 0; s < EVENT_QUEUE_SPIN; s++) {
-	    QueueElementIF qelarr[];
-	    if (aggTarget == -1) {
-	      qelarr = eventQ.dequeue_all();
-	    } else {
-	      qelarr = eventQ.dequeue(aggTarget);
-	    }
-	    if (qelarr != null) {
+	    BatchDescrIF batch = sorter.nextBatch(0);
+	    if (batch != null) {
+	      QueueElementIF qelarr[] = batch.getBatch();
 	      if (DEBUG) System.err.println(name+": got "+qelarr.length+" new requests");
 	      num_events += qelarr.length;
 	      handler.handleEvents(qelarr);

@@ -31,13 +31,15 @@
 import seda.sandStorm.api.*;
 import seda.sandStorm.core.*;
 import seda.sandStorm.main.*;
+import seda.util.*;
 import seda.sandStorm.lib.aSocket.*;
-import  java.net.*;
-import  java.io.*;
-import  java.util.*;
+import seda.nbio.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
 
 public class Pingpong {
-  
+
   String peer;
   boolean sending;
   QueueIF comp_q = null;
@@ -48,7 +50,14 @@ public class Pingpong {
 
   private static final boolean DEBUG = false;
   private static final boolean VERBOSE = true;
-  private static final boolean USE_NIO = true;
+  private static final boolean PROFILE = false;
+  private static final boolean USE_NIO = false;
+
+  // If true, receiver sends a message as well (so one is always in flight)
+  private static final boolean EXCHANGE = false;
+
+  // If true, do writes directly on outgoing socket
+  private static final boolean DIRECT_WRITE = false;
 
   // If true, do more careful measurements (for benchmarking)
   private static final boolean BENCH = true;
@@ -61,6 +70,8 @@ public class Pingpong {
 
   private static final int PORTNUM = 5957;
   private static int MSG_SIZE;
+
+  private static Tracer tracer = new Tracer("Pingpong");
 
   public Pingpong(String peer, boolean sending) {
     this.peer = peer;
@@ -75,8 +86,10 @@ public class Pingpong {
     comp_q = new FiniteQueue();
 
     if (sending) {
+      System.err.println("Pingpong: Connecting to "+peer+":"+PORTNUM);
       clisock = new ATcpClientSocket(peer, PORTNUM, comp_q);
     } else {
+      System.err.println("Pingpong: Listening on port "+PORTNUM);
       servsock = new ATcpServerSocket(PORTNUM, comp_q);
     }
 
@@ -104,7 +117,7 @@ public class Pingpong {
 	conn.startReader(comp_q);
 	sink = (SinkIF)conn;
 	connected = true;
-	if (DEBUG) System.err.println("Pinpong: finished connection");
+	System.err.println("Pingpong: Got connection "+conn);
       }
     }
 
@@ -128,26 +141,34 @@ public class Pingpong {
     QueueElementIF fetched[];
     long before, after;
 
-    if (sending) {
-      if (DEBUG) System.err.println("Sender: Sending first message");
+    if (EXCHANGE || sending) {
+      if (DEBUG) System.err.println("Pingpong: Sending first message");
       try {
 	// Enqueue the message
+	if (PROFILE) tracer.trace("send first enqueue");
   	sink.enqueue(buf);
+	if (PROFILE) tracer.trace("send first enqueue done");
+	Thread.currentThread().yield();
       } catch (SinkException se) {
 	System.err.println("Warning: Got SinkException on enqueue: "+se.getMessage());
       }
-      if (DEBUG) System.err.println("Sender: sent first message");
+      if (DEBUG) System.err.println("Pingpong: Sent first message");
     }
 
     int total_size = 0;
     int m = 0;
     
     while (true) {
+
+      // Reset stats after warmup
+      if (PROFILE && (n == 10)) Tracer.resetAll();
       
       // Block on incoming event queue waiting for events
+      if (PROFILE) tracer.trace("wait for dequeue");
       if (DEBUG) System.err.println("\n\n\nPingpong: Waiting for dequeue...");
       while ((fetched = comp_q.blocking_dequeue_all(0)) == null) ;
 
+      if (PROFILE) tracer.trace("dequeue done");
       if (DEBUG) System.err.println("Pingpong: Got event: "+fetched);
 
       for (i = 0; i < fetched.length; i++) {
@@ -161,11 +182,13 @@ public class Pingpong {
           ATcpInPacket pkt = (ATcpInPacket)fetched[i];
           int size = pkt.size();
 
+          if (PROFILE) tracer.trace("process inpkt");
 	  if (DEBUG) System.err.println("Got packet size="+size);
 
           total_size += size;
 	  if (total_size == MSG_SIZE) {
 	    n++;
+	    if (!sending && ((n % 10) == 0)) System.err.print(".");
 
 	    // If performing timing measurements...
 	    if (BENCH && sending) {
@@ -179,7 +202,7 @@ public class Pingpong {
 		  m++;
 		  if (m == NUM_MEASUREMENTS) {
 		    printMeasurements();
-	            if (sending) System.exit(0);
+	            if (sending) return;
 		  }
 		}
 	      }
@@ -193,10 +216,25 @@ public class Pingpong {
 	    }
 
             // Send new message
-	    try {
-	      sink.enqueue(buf);
-	    } catch (SinkException se) {
-	      System.err.println("Warning: Got SinkException on enqueue: "+se);
+	    if (DIRECT_WRITE) {
+	      try {
+		NonblockingOutputStream nbos = (NonblockingOutputStream)conn.getSocket().getOutputStream();
+		int n2 = 0;
+		while (n2 < buf.data.length) {
+		  n2 += nbos.nbWrite(buf.data, n2, buf.data.length - n2);
+		}
+	      } catch (Exception e) {
+	        System.err.println("Warning: Got Exception on direct write: "+e);
+	      }
+	    } else {
+	      try {
+		if (PROFILE) tracer.trace("send enqueue");
+		sink.enqueue(buf);
+		if (PROFILE) tracer.trace("send enqueue done");
+		Thread.currentThread().yield();
+	      } catch (SinkException se) {
+		System.err.println("Warning: Got SinkException on enqueue: "+se);
+	      }
 	    }
 
 	    total_size = 0;
@@ -266,6 +304,9 @@ public class Pingpong {
       if (DEBUG) System.err.println("Pingpong: Calling setup...");
       np.setup();
       np.doIt();
+
+      if (PROFILE) Tracer.dumpAll();
+
       System.exit(0);
 
     } catch (Exception e) {

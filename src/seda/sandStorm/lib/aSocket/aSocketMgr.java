@@ -29,6 +29,7 @@ import seda.sandStorm.api.internal.*;
 import seda.sandStorm.core.*;
 import seda.sandStorm.internal.*;
 import seda.sandStorm.main.*;
+import seda.util.*;
 
 import java.net.*;
 import java.io.*;
@@ -44,6 +45,7 @@ import java.util.*;
 public class aSocketMgr {
 
   private static final boolean DEBUG = false;
+  private static final boolean PROFILE = false;
 
   private static ThreadManagerIF aSocketTM, aSocketRCTM;
   private static SinkIF read_sink;
@@ -56,12 +58,16 @@ public class aSocketMgr {
   static boolean USE_NIO = false;
   private static aSocketImplFactory factory;
 
+  public static Tracer tracer;
+
   /**
    * Called at startup time by the Sandstorm runtime.
    */
   public static void initialize(ManagerIF mgr, SystemManagerIF sysmgr) throws Exception {
 
     synchronized (init_lock) {
+      if (PROFILE) tracer = new Tracer("aSocketMgr");
+
       SandstormConfig cfg = mgr.getConfig();
 
       String provider = cfg.getString("global.aSocket.provider");
@@ -95,10 +101,10 @@ public class aSocketMgr {
       if (cfg.getBoolean("global.aSocket.governor.enable")) {
 	aSocketRCTM = new aSocketRCTMSleep(mgr);
 	sysmgr.addThreadManager("aSocketRCTM", aSocketRCTM);
-	rsw = new aSocketStageWrapper("aSocket ReadStage", 
+	rsw = new aSocketStageWrapper(mgr, "aSocket ReadStage", 
   	    revh, new ConfigData(mgr), aSocketRCTM);
       } else {
-	rsw = new aSocketStageWrapper("aSocket ReadStage", 
+	rsw = new aSocketStageWrapper(mgr, "aSocket ReadStage", 
 	    revh, new ConfigData(mgr), aSocketTM);
       }
 
@@ -106,13 +112,13 @@ public class aSocketMgr {
       read_sink = readStage.getSink();
 
       ListenEventHandler levh = new ListenEventHandler();
-      aSocketStageWrapper lsw = new aSocketStageWrapper("aSocket ListenStage", 
+      aSocketStageWrapper lsw = new aSocketStageWrapper(mgr, "aSocket ListenStage", 
 	  levh, new ConfigData(mgr), aSocketTM);
       StageIF listenStage = sysmgr.createStage(lsw, true);
       listen_sink = listenStage.getSink();
 
       WriteEventHandler wevh = new WriteEventHandler();
-      aSocketStageWrapper wsw = new aSocketStageWrapper("aSocket WriteStage", 
+      aSocketStageWrapper wsw = new aSocketStageWrapper(mgr, "aSocket WriteStage", 
 	  wevh, new ConfigData(mgr), aSocketTM);
       StageIF writeStage = sysmgr.createStage(wsw, true);
       write_sink = writeStage.getSink();
@@ -151,6 +157,7 @@ public class aSocketMgr {
   }
 
   static public void enqueueRequest(aSocketRequest req) {
+    if (PROFILE) tracer.trace("enqueueRequest called");
     init();
 
     if ((req instanceof ATcpWriteRequest) ||
@@ -164,7 +171,10 @@ public class aSocketMgr {
 	(req instanceof AUdpDisconnectRequest)) {
 
       try {
+	if (PROFILE) WriteEventHandler.tracer.trace("write_sink enqueue");
 	write_sink.enqueue(req);
+	//Thread.currentThread().yield(); // XXX MDW TESTING
+	if (PROFILE) WriteEventHandler.tracer.trace("write_sink enqueue done");
       } catch (SinkException se) {
 	System.err.println("aSocketMgr.enqueueRequest: Warning: Got SinkException "+se);
 	System.err.println("aSocketMgr.enqueueRequest: This is a bug - contact <mdw@cs.berkeley.edu>");
@@ -195,6 +205,7 @@ public class aSocketMgr {
     } else {
       throw new IllegalArgumentException("Bad request type "+req);
     }
+    if (PROFILE) tracer.trace("enqueueRequest done");
   }
 }
 

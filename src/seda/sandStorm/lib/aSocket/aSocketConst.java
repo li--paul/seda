@@ -47,7 +47,7 @@ public interface aSocketConst {
    * Number of empty writes after which write-ready mask is disabled.
    * If set to -1, no disable will occur.
    */
-  public static final int WRITE_MASK_DISABLE_THRESHOLD = 10; 
+  public static final int WRITE_MASK_DISABLE_THRESHOLD = 10;
 
   /** Time in ms to sleep waiting for select */
   public static final int SELECT_TIMEOUT = 1000;

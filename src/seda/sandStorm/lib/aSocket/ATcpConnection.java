@@ -112,6 +112,12 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
     return clientSocket;
   }
 
+  /**
+   * Returns the low-level Socket object associated with this connection.
+   */
+  public Socket getSocket() {
+    return sockState.nbsock;
+  }
 
   /** 
    * Associate a SinkIF with this connection and allow data

@@ -100,11 +100,8 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
 	if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Add to tail");
 	qlist.add_to_tail(enqueueMe);  // wake up one blocker
       }
-      // XXX MDW: Trying to track down a bug here ...
       if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Doing notify");
-      blocker.notify();
-      if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Done with notify");
-      //blocker.notifyAll();
+      blocker.notifyAll();
     }
     if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Exiting");
   }

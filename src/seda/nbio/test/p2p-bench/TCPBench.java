@@ -48,13 +48,18 @@
 import java.net.*;
 import java.io.*;
 import seda.nbio.*;
+import seda.util.*;
 
 public class TCPBench {
 
   private static final boolean DEBUG = false;  /* Pingpong */
   private static final boolean DEBUG2 = false; /* Bandwidth */
-  private static final int PORTNUM = 5721;
+  private static final int PORTNUM = 5957;
   private static final int SELECT_TIMEOUT = 10000;
+  private static final boolean PROFILE = false;
+
+  private static final boolean DO_PINGPONG = true;
+  private static final boolean DO_BANDWIDTH = true;
 
   private static boolean sending;
   private static boolean nonblocking;
@@ -64,6 +69,7 @@ public class TCPBench {
   private static Socket sock; 
   private static SelectSet read_selset, write_selset;
   private static SelectItem read_selitem, write_selitem;
+  private static Tracer tracer;
 
   private static void printResults(String msg, int numiters, int message_size, long t1, long t2) {
     double usec = (t2-t1)*1.0e3;
@@ -101,44 +107,62 @@ public class TCPBench {
       t1 = System.currentTimeMillis();
       for (i = 0; i < NUM_MESSAGES; i++) {
         if (DEBUG) System.err.println("["+i+"] Sender: Sending message...");
+	if (PROFILE) tracer.trace("Sending msg");
 	if (nonblocking) {
  	  int n = 0;
+	  if (PROFILE) tracer.trace("  Write loop");
 	  while (n < barr.length) {
 
             if (useselect) {
+	      if (PROFILE) tracer.trace("  write select");
 	      while ((write_selitem.revents & Selectable.WRITE_READY) == 0) {
   	        write_selset.select(SELECT_TIMEOUT);
               }
               if (DEBUG) System.err.println("["+i+"] Sender: Select says write is ready");
+	      if (PROFILE) tracer.trace("  write select done");
 	      write_selitem.revents = 0;
 	    }
 
+	    if (PROFILE) tracer.trace("  nbWrite");
 	    n += nbos.nbWrite(barr, n, barr.length - n);
+	    if (PROFILE) tracer.trace("  nbWrite done");
 	  }
+	  if (PROFILE) tracer.trace("  Write loop done");
         } else {
 	  /* Blocking */
+	  if (PROFILE) tracer.trace("write");
 	  os.write(barr);
 	  os.flush();
+	  if (PROFILE) tracer.trace("write done");
 	}
         if (DEBUG) System.err.println("["+i+"] Sender: Receiving message...");
+	if (PROFILE) tracer.trace("Receiving msg");
 
 	if (nonblocking) {
 	  int n = 0;
+	  if (PROFILE) tracer.trace("  Read loop");
 	  while (n < barr2.length) {
             if (useselect) {
+	      if (PROFILE) tracer.trace("  read select");
 	      while ((read_selitem.revents & Selectable.READ_READY) == 0) {
                 read_selset.select(SELECT_TIMEOUT);
               }
+	      if (PROFILE) tracer.trace("  read select done");
 	      read_selitem.revents = 0;
             }
+	    if (PROFILE) tracer.trace("  nbis.read");
 	    n += nbis.read(barr2, n, (barr2.length - n));
+	    if (PROFILE) tracer.trace("  nbis.read done");
 	  }
+	  if (PROFILE) tracer.trace("  Read loop done");
 	} else {
 	  /* Blocking */
+	  if (PROFILE) tracer.trace("  Read loop");
           int n = 0;
 	  while (n < barr2.length) {
 	    n += is.read(barr2, n, (barr2.length - n));
  	  }
+	  if (PROFILE) tracer.trace("  Read loop done");
         }
       }
       t2 = System.currentTimeMillis();
@@ -317,6 +341,8 @@ public class TCPBench {
     ServerSocket servsock = null;
     NonblockingServerSocket nbservsock = null;
 
+    if (PROFILE) tracer = new Tracer("TCPBench");
+
     try {
 
       if ((args.length < 4) || (args.length > 5)) {
@@ -401,13 +427,14 @@ public class TCPBench {
 	System.out.println("Got connection from "+sock.getInetAddress().toString());
       }
 
-      doPingpong();
-      doBandwidth();
+      if (DO_PINGPONG) doPingpong();
+      if (DO_BANDWIDTH) doBandwidth();
       sock.close();
       if (!sending) {
         if (nonblocking) nbservsock.close();
         else servsock.close();
       }
+      if (PROFILE) Tracer.dumpAll();
 
     } catch (Exception e) {
       System.out.println("TCPBench: Got exception: "+e.getMessage());
