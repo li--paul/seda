@@ -25,6 +25,7 @@
 package seda.sandStorm.core;
 
 import seda.sandStorm.api.*;
+import seda.sandStorm.api.internal.ThreadManagerIF;
 
 import java.util.Hashtable;
 
@@ -47,17 +48,34 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
   private EnqueuePredicateIF pred;
   private String name;
   private boolean closed;
+  private ThreadManagerIF threadmgr;
 
   /** 
-   * Create a FiniteQueue with the given enqueue predicate.
+   * Create a FiniteQueue with the given enqueue predicate, name, and
+   * thread manager.
    */
-  public FiniteQueue(EnqueuePredicateIF pred) {
-    this.name = null;
+  public FiniteQueue(EnqueuePredicateIF pred, String name, ThreadManagerIF threadmgr) {
+    this.name = name;
     this.pred = pred;
     qlist = new ssLinkedList();
     queueSize = 0;
     blocker = new Object();
     provisionalTbl = new Hashtable(1);
+    this.threadmgr = threadmgr;
+  }
+
+  /** 
+   * Create a FiniteQueue with the given enqueue predicate.
+   */
+  public FiniteQueue(EnqueuePredicateIF pred) {
+    this(pred, null, null);
+  }
+
+  /** 
+   * Create a FiniteQueue with the given enqueue predicate and thread manager.
+   */
+  public FiniteQueue(EnqueuePredicateIF pred, ThreadManagerIF threadmgr) {
+    this(pred, null, threadmgr);
   }
 
   /**
@@ -67,13 +85,27 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
     this((EnqueuePredicateIF)null);
   }
   
+  /** 
+   * Create a FiniteQueue with no enqueue predicate, but inlude a thread 
+   * manager.
+   */
+  public FiniteQueue(ThreadManagerIF threadmgr) {
+    this((EnqueuePredicateIF)null, null, threadmgr);
+  }
   /**
-   * Create a FiniteQueue with no enqueue and the given name. Used for
-   * debugging.
+   * Create a FiniteQueue with no enqueue or thread manager, but include
+   * the given name. Used for debugging.
    */
   public FiniteQueue(String name) {
-    this((EnqueuePredicateIF)null);
-    this.name = name;
+    this((EnqueuePredicateIF)null, name, null);
+  }
+
+  /**
+   * Create a FiniteQueue with no enqueue, but include a thread manager and
+   * the given name. Used for debugging.
+   */
+  public FiniteQueue(String name, ThreadManagerIF threadmgr) {
+    this((EnqueuePredicateIF)null, name, threadmgr);
   }
 
   /** 
@@ -109,6 +141,8 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
       if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Doing notify");
       blocker.notifyAll();
     }
+    if(threadmgr!=null)
+      threadmgr.wake();
     if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Exiting");
   }
 
@@ -145,6 +179,8 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
       }
       blocker.notifyAll();  // wake up all sleepers
     }
+    if(threadmgr!=null)
+      threadmgr.wake();
   }
 
   public QueueElementIF dequeue() {
@@ -404,6 +440,8 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
       }
       blocker.notifyAll();
     }
+    if(threadmgr!=null)
+      threadmgr.wake();
   }
 
   /** 
