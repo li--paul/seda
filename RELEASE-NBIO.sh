@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Generate a snapshot release of the 'mdw/nbio' directory
+# Generate a snapshot release of the NBIO directory
 
 BASE_DIR=$HOME/src/releases
 RELEASE=nbio-release-`date +%Y%m%d`
