@@ -13,8 +13,13 @@ PACKAGES = seda.sandStorm.api \
            seda.nbio \
            seda.util 
 
+NBIOPACKAGES = seda.nbio
+
 javadocs:
 	javadoc -d . -header '<b>More information:</b> <a href="http://www.cs.berkeley.edu/~mdw/proj/seda/">http://www.cs.berkeley.edu/~mdw/proj/seda/</a>' -windowtitle 'SEDA Javadoc Documentation' -package -author $(PACKAGES)
+
+nbio:
+	javadoc -d . -header '<b>More information:</b> <a href="http://www.cs.berkeley.edu/~mdw/proj/java-nbio">http://www.cs.berkeley.edu/~mdw/proj/java-nbio/</a>' -windowtitle 'NBIO Javadoc Documentation' -package -author $(NBIOPACKAGES)
 
 clean:
 	rm -rf *.html seda package-list stylesheet.css
