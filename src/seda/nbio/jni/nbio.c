@@ -369,6 +369,45 @@ static int poll(struct pollfd *ufds, unsigned int nfds, int timeout) {
 }
 #endif
 
+void nbio_interrupt_select(JNIEnv *env, int fd) {
+  DEBUG(fprintf(stderr, "NBIO: nbio_interrupt_select called.\n"));
+  if (fd > 0) {
+    char buf = 0;
+    int rc;
+    rc = write(fd, &buf, 1);
+    if (rc < 0) {
+      THROW_EXCEPTION(env, "java/net/SocketException", strerror(errno));
+      return;
+    }
+    DEBUG(fprintf(stderr, "NBIO: nbio_interrupt_select: write to wakeup socket %d returned %d\n", fd, rc));
+  }
+  else
+    DEBUG(fprintf(stderr, "NBIO: nbio_interrupt_select: wakeup socket fd "
+		  "was %d\n", fd ));
+}
+
+void nbio_read_wakeup_socket(int fd) {
+  // A Poll operation got interrupted.  Read the wakeup socket dry.
+  char crud[80];
+  int bytes;
+  while ((bytes = read(fd, crud, sizeof(crud)))
+	 > 0) {
+    DEBUG(fprintf(stderr,"NBIO nbio_read_wakeup_socket: read %d byte(s) from wakeup socket %d.\n", bytes, fd));
+  }
+  DEBUG(fprintf(stderr,"NBIO nbio_read_wakeup_socket: read from wakeup socket %d gave return %d, errno %d.\n", fd, bytes, errno));
+}
+
+#define MAX_POLLOBJS 100
+static struct {
+    jobject pollobj;
+    int wakeup_sockets[2];
+ } pollobjs[MAX_POLLOBJS] = { { NULL, {-1, -1} } };
+
+ static int bum_wakeup_sockets[2] = {-1}; 
+
+static int n_pollobjs = 0;
+
+
 /* NonblockingSocketImpl *****************************************************/
 
 /*
@@ -1514,6 +1553,7 @@ JNIEXPORT jboolean JNICALL Java_seda_nbio_SelectSetDevPollImpl_supported(JNIEnv 
 /* Max number of file descriptors if flat table used */
 	#define MAX_FDS 32768
 
+
 typedef struct devpoll_impl_state {
 	int devpoll_fd;
 	int max_retevents;
@@ -1523,6 +1563,7 @@ typedef struct devpoll_impl_state {
 #else
 	jobject selitems[MAX_FDS];
 #endif
+  int wakeup_sockets[2];
 } devpoll_impl_state;
 
 JNIEXPORT jboolean JNICALL Java_seda_nbio_SelectSetDevPollImpl_supported(JNIEnv *env, jclass cls) {
@@ -1587,47 +1628,85 @@ JNIEXPORT void JNICALL Java_seda_nbio_SelectSetDevPollImpl_init (JNIEnv * env, j
 		return;
 	}
 
-	return;
+  // Open and Register wakeup socket for this SelectSet.
+  {
+      struct pollfd pfd;
+      if (socketpair(PF_UNIX, SOCK_STREAM, 0, state->wakeup_sockets) != 0) {
+	  char errmsg[160];
+	  snprintf(errmsg, sizeof(errmsg), "opening socketpair for "
+		   "wakeup: %s", strerror(errno));
+	  THROW_EXCEPTION(env, "java/net/SocketException", errmsg);
+      }
+      if (fcntl(state->wakeup_sockets[0], F_SETFL, O_NONBLOCK) < 0    ||
+	  fcntl(state->wakeup_sockets[1], F_SETFL, O_NONBLOCK) < 0) {
+	  char errmsg[160];
+	  snprintf(errmsg, sizeof(errmsg), "nbio_fids_init: setting wakeup sockets "
+		   "nonblocking: %s", strerror(errno));
+	  THROW_EXCEPTION(env, "java/net/SocketException", errmsg);
+      }
+      DEBUG(fprintf(stderr, "NBIO: Wakeup sockets %d and %d opened.\n",
+		    state->wakeup_sockets[0], state->wakeup_sockets[1]));
+     if (n_pollobjs >= MAX_POLLOBJS) {
+	 THROW_EXCEPTION(env, "java/lang/OutOfMemoryError",
+			 "No more room for another SelectSet in NBIO pollobjs.");
+	 return;
+     }
+      pollobjs[n_pollobjs].pollobj = this;
+      pollobjs[n_pollobjs].wakeup_sockets[0] = state->wakeup_sockets[0];
+      pollobjs[n_pollobjs++].wakeup_sockets[1] = state->wakeup_sockets[1];
+
+      pfd.fd = state->wakeup_sockets[1];
+      pfd.events = POLLIN;
+      if (write(state->devpoll_fd, &pfd, sizeof(struct pollfd))
+	  != sizeof (struct pollfd)) {
+	  THROW_EXCEPTION(env, "java/io/IOException", strerror(errno));
+	  return;
+      }
+      DEBUG(fprintf(stderr, "NBIO DevPollImpl: Registered wakeup socket %d "
+		    "(devpollfd %d)\n",
+		    state->wakeup_sockets[1], state->devpoll_fd));
+  }
+  return;
 }
 
 JNIEXPORT void JNICALL Java_seda_nbio_SelectSetDevPollImpl_register (JNIEnv * env, jobject this, jobject selitemobj) {
-	devpoll_impl_state *state;
-	jobject fdobj;
-	short events, realevents;
-	struct pollfd pfd;
-	jobject selitem;
+  devpoll_impl_state *state;
+  jobject fdobj;
+  short events, realevents;
+  struct pollfd pfd;
+  jobject selitem;
 
-	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register called\n"));
+  DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register called\n"));
 
-	// Get state
-	state = (devpoll_impl_state *)(((*env)->GetLongField(env, this, FID_seda_nbio_SelectSetDevPollImpl_native_state)) & 0xffffffff);
+  // Get state
+  state = (devpoll_impl_state *)(((*env)->GetLongField(env, this, FID_seda_nbio_SelectSetDevPollImpl_native_state)) & 0xffffffff);
 
-	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register got state, devpoll_fd %d\n", state->devpoll_fd));
+  DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register got state, devpoll_fd %d\n", state->devpoll_fd));
 
-	// Get fd
-	fdobj = (*env)->GetObjectField(env, selitemobj, FID_seda_nbio_SelectItem_fd);
-	pfd.fd = (*env)->GetIntField(env, fdobj, FID_seda_nbio_NBIOFileDescriptor_fd);
-	// Get events
-	events = (*env)->GetShortField(env, selitemobj, FID_seda_nbio_SelectItem_events);
-	realevents = 0;
-	if (events != 0) {
-		if (events & SELECTABLE_READ_READY) {
-			realevents |= (POLLIN | POLLPRI);
-		}
-		if (events & SELECTABLE_WRITE_READY) {
-			realevents |= POLLOUT;
-		}
-	}
-	pfd.events = realevents;
-	DEBUG(fprintf(stderr,"nbio: events was 0x%lx, pfd.events now 0x%lx\n", events, realevents));
+  // Get fd
+  fdobj = (*env)->GetObjectField(env, selitemobj, FID_seda_nbio_SelectItem_fd);
+  pfd.fd = (*env)->GetIntField(env, fdobj, FID_seda_nbio_NBIOFileDescriptor_fd);
+  // Get events
+  events = (*env)->GetShortField(env, selitemobj, FID_seda_nbio_SelectItem_events);
+  realevents = 0;
+  if (events != 0) {
+    if (events & SELECTABLE_READ_READY) {
+      realevents |= (POLLIN | POLLPRI);
+    }
+    if (events & SELECTABLE_WRITE_READY) {
+      realevents |= POLLOUT;
+    }
+  }
+  pfd.events = realevents;
+  DEBUG(fprintf(stderr,"nbio: events was 0x%lx, pfd.events now 0x%lx\n", events, realevents));
 
-	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register adding (fd=%d,events=0x%x)\n", pfd.fd, pfd.events));
+  DEBUG(fprintf(stderr,"SelectSetDevPollImpl.register adding (fd=%d,events=0x%x)\n", pfd.fd, pfd.events));
 
-	// Register
-	if (write(state->devpoll_fd, &pfd, sizeof(struct pollfd)) != sizeof(struct pollfd)) {
-		THROW_EXCEPTION(env, "java/io/IOException", strerror(errno));
-		return;
-	}
+  // Register
+  if (write(state->devpoll_fd, &pfd, sizeof(struct pollfd)) != sizeof(struct pollfd)) {
+    THROW_EXCEPTION(env, "java/io/IOException", strerror(errno));
+    return;
+  }
 
 #ifdef USE_BTREE
 	data = btree_search(state->tree, pfd.fd);
@@ -1693,6 +1772,7 @@ JNIEXPORT void JNICALL Java_seda_nbio_SelectSetDevPollImpl_deregister (JNIEnv * 
 	}
 #endif
 
+	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.deregister done\n"));
 	return;
 }
 
@@ -1704,6 +1784,8 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 	int itemarrlen, retitemarrlen, ret, i, retfd, count;
 	struct pollfd *pfd;
 	short realevents;
+	int wfd = state->wakeup_sockets[1]; // wakeup socket fd.
+
 
 	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.doSelect called\n"));
 
@@ -1766,7 +1848,14 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 	count = 0;
 	for (i = 0; i < ret; i++) {
 		pfd = &(state->retevents[i]);
-
+	
+		if (retfd == wfd) {
+		  DEBUG(fprintf(stderr,"NBIO DevPollImpl.doSelect: POLLIN on wakeup socket %d "
+			    "(devpollfd %d)\n",
+			    wfd, state->devpoll_fd));
+		  nbio_read_wakeup_socket(wfd);
+		  continue;		/* skip rest of this pass. */
+		}
 		DEBUG(fprintf(stderr,"SelectSetDevPollImpl.doSelect ret[%d] fd %d revents 0x%x\n", i, pfd->fd, pfd->revents));
 		retfd = pfd->fd;
 
@@ -1835,9 +1924,42 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 	return count;
 }
 
+
+JNIEXPORT void JNICALL Java_seda_nbio_SelectSetDevPollImpl_interruptSelect(JNIEnv *env, jobject this) {
+	devpoll_impl_state *state;
+	// Get state
+	state = (devpoll_impl_state *)(((*env)->GetLongField(env, this, FID_seda_nbio_SelectSetDevPollImpl_native_state)) & 0xffffffff);
+	nbio_interrupt_select(env, state->wakeup_sockets[0]);
+}
+
 #endif /* HAS_DEVPOLL */
 
 /* SelectSetPollImpl *******************************************************/
+
+
+int* nbio_pollImpl_init_wakeup(JNIEnv *env, jobject this) {
+     int i;
+     for (i = 0; i < n_pollobjs; i++) {	/* presuming linear search not awful */
+	 if (pollobjs[i].pollobj == this)
+	     return pollobjs[i].wakeup_sockets;
+     }
+     if (n_pollobjs >= MAX_POLLOBJS) {
+	 THROW_EXCEPTION(env, "java/lang/OutOfMemoryError",
+			 "No more room for another SelectSet in nbio pollobjs.");
+	 return bum_wakeup_sockets;
+     }
+     //  This section should be synchronized / mutex'd...
+     pollobjs[n_pollobjs].pollobj = this;
+     if (socketpair(AF_UNIX, SOCK_STREAM, 0,
+		    pollobjs[n_pollobjs].wakeup_sockets) != 0) {
+	 char errmsg[160];
+	 snprintf(errmsg, sizeof(errmsg), "opening socketpair for "
+		  "wakeup: %s", strerror(errno));
+	 THROW_EXCEPTION(env, "java/net/SocketException", errmsg);
+	 return bum_wakeup_sockets;
+     }
+     return pollobjs[n_pollobjs++].wakeup_sockets;
+}
 
 JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jobject this, jint timeout) {
 	jobjectArray itemarr;
@@ -1849,6 +1971,8 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 	int ret;
 	int num_ufds = 0;
 	short events, realevents;
+	int readevents = 0;
+	int *wfd = NULL;			/* int[2] wakeup socket fd's */
 
 	DEBUG(fprintf(stderr,"NBIO: doSelect called\n"));
 
@@ -1857,6 +1981,8 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 			return -1;
 		}
 	}
+
+	wfd = nbio_pollImpl_init_wakeup(env, this);
 
 	itemarr = (jobjectArray)(*env)->GetObjectField(env, this, FID_seda_nbio_SelectSetPollImpl_itemarr);
 	if (itemarr == NULL) {
@@ -1933,6 +2059,18 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 		}
 	}
 
+	 // If there are reads going on, include the wakeup socket.
+	if (readevents != 0  &&  wfd[1] > 0) {
+		DEBUG(fprintf(stderr,"NBIO: doSelectt: ufds[%d].fd will be wakeup socket %d.\n",
+			      n, wfd[1] ));
+		ufds[n].events = POLLIN;	/* notice if wakeup socket has s'g to rd. */
+		ufds[n].revents = 0;
+		ufds[n].fd = wfd[1];
+		ufds_map[n] = i;  // danger, this i == itemarrlen.
+		n++;
+		num_ufds++;
+	}
+
 	/* XXX MDW: poll() is interruptible. Under Linux, a signal (say, from 
 	 * the GC) might interrupt poll. For now I don't deal with this
 	 * properly - I just go ahead and return early from doSelect() if the 
@@ -1972,6 +2110,10 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 
 		if (ufds[n].revents != 0) {
 
+			if (ufds[n].fd == wfd[1] && (ufds[n].revents & POLLIN)) {
+				nbio_read_wakeup_socket(wfd[1]);
+				continue;		/* skip rest of this pass. */
+			}
 			i = ufds_map[n];
 			selitemobj = (*env)->GetObjectArrayElement(env, itemarr, i);
 			if (selitemobj == NULL) {
@@ -2001,8 +2143,11 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 	free(ufds_map);
 
 	DEBUG(fprintf(stderr,"NBIO: doSelect: returning %d\n", ret));
-	return ret;
-
+ 	return ret;
 }
 
+JNIEXPORT void JNICALL Java_seda_nbio_SelectSetPollImpl_interruptSelect(JNIEnv *env, jobject this) {
+    int *wfd = nbio_pollImpl_init_wakeup(env, this);
+    nbio_interrupt_select(env, wfd[0]);
+}
 
