@@ -22,9 +22,7 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
+
 
 public interface SimpleP2PConst {
 

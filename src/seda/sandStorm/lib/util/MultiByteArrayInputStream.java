@@ -24,10 +24,10 @@
 
 package seda.sandStorm.lib.util;
 
-import seda.nbio.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.nbio.NonblockingInputStream;
+
+import java.io.EOFException;
+import java.io.IOException;
 
 /**
  * This class allows you to treat a list of byte arrays as a single

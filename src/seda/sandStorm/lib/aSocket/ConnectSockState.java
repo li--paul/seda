@@ -24,12 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * Internal class used to represent state of a socket while an 

@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.BufferElement;
 
 /** 
  * An ATcpInPacket represents a packet which was received from an

@@ -24,13 +24,17 @@
 
 package seda.sandStorm.lib.aSocket.nio;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 import seda.sandStorm.lib.aSocket.SelectSourceIF;
 
-import java.nio.channels.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * A NIOSelectSource is an implementation of SourceIF which pulls events from

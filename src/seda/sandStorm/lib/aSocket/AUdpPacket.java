@@ -24,9 +24,11 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.net.*;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 /**
  * An AUdpPacket is an extension to BufferElement that supports

@@ -24,13 +24,16 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
-import seda.sandStorm.main.*;
-import seda.util.*;
-import java.util.*;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.api.internal.BatchDescrIF;
+import seda.sandStorm.api.internal.BatchSorterIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
+import seda.sandStorm.internal.ThreadPool;
+import seda.util.Tracer;
 
 /**
  * aSocketThreadManager provides a thread manager for the aSocket layer:

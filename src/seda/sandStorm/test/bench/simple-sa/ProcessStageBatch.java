@@ -22,9 +22,10 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.QueueElementIF;
+
+import java.util.Random;
 
 public class ProcessStageBatch extends ProcessStage {
 

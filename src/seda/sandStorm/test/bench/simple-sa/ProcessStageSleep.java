@@ -22,8 +22,7 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.ConfigDataIF;
 
 public class ProcessStageSleep extends ProcessStage {
 

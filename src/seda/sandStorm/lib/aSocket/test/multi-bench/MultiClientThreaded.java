@@ -31,10 +31,15 @@
  * to measure the overhead of idle connections to a server.
  */
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-import seda.util.*;
+import seda.util.MDWUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Random;
 
 public class MultiClientThreaded extends Thread {
 

@@ -24,12 +24,13 @@
 
 package seda.sandStorm.lib.http;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.lib.util.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+import seda.sandStorm.lib.aSocket.aSocketInputStream;
+
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.util.Vector;
 
 /**
  * This is a package-internal class which reads HTTP request packets.

@@ -25,12 +25,12 @@
 package seda.sandStorm.lib.http;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.SimpleSink;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
 
 /**
  * This class represents a single HTTP connection. When an httpServer

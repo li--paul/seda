@@ -24,16 +24,15 @@
 
 package seda.sandStorm.lib.aSocket.nio;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkException;
 import seda.sandStorm.lib.aSocket.*;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
-
-import java.nio.*;
-import java.nio.channels.*;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
 
 /**
  * Internal class used to represent state of a socket while an 

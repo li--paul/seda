@@ -23,10 +23,8 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
 
-import java.util.*;
+import java.util.Hashtable;
 
 public class RecvStage implements EventHandlerIF, SimpleP2PConst {
 

@@ -24,9 +24,8 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * A Gnutella query hits packet.

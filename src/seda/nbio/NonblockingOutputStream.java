@@ -25,7 +25,8 @@
 
 package seda.nbio;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * A NonblockingOutputStream is an OutputStream with nonblocking semantics.

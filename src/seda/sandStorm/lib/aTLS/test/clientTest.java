@@ -24,15 +24,11 @@
 
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aTLS.*;
-import seda.sandStorm.lib.aTLS.protocol.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.main.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+import seda.sandStorm.lib.aTLS.aTLSClientSocket;
+import seda.sandStorm.lib.aTLS.aTLSConnection;
+import seda.sandStorm.lib.aTLS.aTLSConst;
 
 /**
  * Simulates a client using the aTLS library, making a secure connection with a server.

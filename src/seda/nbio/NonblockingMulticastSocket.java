@@ -24,8 +24,8 @@
 
 package seda.nbio;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * NonblockingMulticastSocket provides non-blocking multicast datagram I/O.

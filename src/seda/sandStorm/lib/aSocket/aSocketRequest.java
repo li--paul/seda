@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /** 
  * This is the superclass for the various requests that can be 

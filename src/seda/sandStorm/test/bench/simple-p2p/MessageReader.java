@@ -22,10 +22,9 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.util.*;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
 
 public class MessageReader implements SimpleP2PConst {
   private static final boolean DEBUG = false;

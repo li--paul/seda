@@ -24,12 +24,10 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * The event handler used by the AFileTPImpl stage.

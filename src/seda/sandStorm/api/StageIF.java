@@ -24,7 +24,7 @@
 
 package seda.sandStorm.api;
 
-import seda.sandStorm.api.internal.*;
+import seda.sandStorm.api.internal.StageWrapperIF;
 
 /**
  * A StageIF represents a handle to an application stage. Applications

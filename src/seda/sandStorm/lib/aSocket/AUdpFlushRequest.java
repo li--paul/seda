@@ -24,7 +24,8 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * Request to flush a connection.

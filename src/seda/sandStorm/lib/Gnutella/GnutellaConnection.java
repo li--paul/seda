@@ -24,12 +24,15 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkClosedException;
+import seda.sandStorm.api.SinkException;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.SimpleSink;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
+
+import java.net.InetAddress;
 
 /**
  * A GnutellaConnection represents a virtual connection to the

@@ -24,11 +24,11 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import java.util.*;
-import seda.util.*;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.internal.BatchDescrIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
+import seda.util.MDWUtil;
 
 /**
  * aSocketRCTMSleep is a version of aSocketThreadManager that incorporates

@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+
 
 /**
  * ATcpConnectFailedEvent objects will be passed to the SinkIF 

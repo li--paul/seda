@@ -24,7 +24,8 @@
 
 package seda.nbio;
 
-import java.io.*;
+import java.io.EOFException;
+import java.io.IOException;
 
 /**
  * Package-internal class implementing NonblockingInputStream for

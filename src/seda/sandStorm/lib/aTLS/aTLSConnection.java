@@ -24,17 +24,22 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.lib.aTLS.protocol.*;
 import COM.claymoresystems.ptls.*;
 import COM.claymoresystems.sslg.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkClosedException;
+import seda.sandStorm.api.SinkException;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpClientSocket;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+import seda.sandStorm.lib.aSocket.ATcpServerSocket;
+import seda.sandStorm.lib.aTLS.protocol.aTLSRecord;
 
-import java.security.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayOutputStream;
+import java.net.InetAddress;
+import java.util.LinkedList;
 
 /**
  * Internal class that represents a connection between a client/server

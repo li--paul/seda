@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * This is the base class for all error events passed up by the aSocket

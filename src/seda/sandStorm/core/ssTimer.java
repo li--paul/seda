@@ -24,8 +24,9 @@
 
 package seda.sandStorm.core;
 
-import seda.sandStorm.api.*;
-import seda.util.*;
+import seda.sandStorm.api.ProfilableIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * The ssTimer class provides a mechanism for registering

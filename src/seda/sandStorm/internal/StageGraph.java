@@ -24,12 +24,16 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.SandstormConfigIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * This class provides an interface allowing operations to be performed

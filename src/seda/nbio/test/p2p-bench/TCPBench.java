@@ -45,10 +45,14 @@
  *
  */
 
-import java.net.*;
-import java.io.*;
 import seda.nbio.*;
-import seda.util.*;
+import seda.util.Tracer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class TCPBench {
 

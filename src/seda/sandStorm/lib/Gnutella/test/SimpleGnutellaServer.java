@@ -23,14 +23,11 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.ssTimer;
 import seda.sandStorm.lib.Gnutella.*;
-import seda.util.*;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.text.*;
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * This is a simple Gnutella server implemented using the Sandstorm

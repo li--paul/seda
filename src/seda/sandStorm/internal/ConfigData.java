@@ -24,11 +24,16 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.StageIF;
+import seda.sandStorm.main.SandstormConfig;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * ConfigData is used to pass configuration arguments into various

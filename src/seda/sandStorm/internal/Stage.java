@@ -24,11 +24,11 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.SandstormConfigIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.api.StageIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
 
 /**
  * A Stage is a basic implementation of StageIF for application-level

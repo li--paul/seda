@@ -24,7 +24,8 @@
 
 package seda.nbio;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * A NonblockingInputStream is an InputStream which implements nonblocking

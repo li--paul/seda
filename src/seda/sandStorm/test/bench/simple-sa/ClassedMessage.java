@@ -22,11 +22,8 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-
-import java.util.*;
+import seda.sandStorm.api.ClassQueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 public class ClassedMessage extends Message implements ClassQueueElementIF, SimpleP2PConst {
 

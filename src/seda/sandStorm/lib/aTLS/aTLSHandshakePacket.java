@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.lib.aTLS.protocol.*;
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.lib.aTLS.protocol.aTLSHandshakeRecord;
 
 /** 
  * aTLSHandshakePacket is used solely for the handshake stage to indicate

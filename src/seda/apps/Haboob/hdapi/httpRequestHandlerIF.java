@@ -25,12 +25,8 @@
 
 package seda.apps.Haboob.hdapi;
 
-import seda.apps.Haboob.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.http.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.lib.aDisk.*;
+import seda.sandStorm.lib.http.httpRequest;
+import seda.sandStorm.lib.http.httpResponse;
 
 /**
  * HDAPI modules must export this interface, which accept an httpRequest

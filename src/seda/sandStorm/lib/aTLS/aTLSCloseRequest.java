@@ -24,7 +24,8 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * An aTLSCloseRequest is a request created when aTLSConnection.close()

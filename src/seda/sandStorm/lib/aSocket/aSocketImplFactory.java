@@ -23,8 +23,9 @@
  */
 
 package seda.sandStorm.lib.aSocket;
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * aSocketImplFactory is an internal abstract class used to represent

@@ -27,8 +27,8 @@
  * socket and writes packets to it.
  */ 
 
-import java.net.*;
-import java.io.*;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class BlockingClient {
 

@@ -24,12 +24,10 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.SinkIF;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Internal class used to represent a server socket listening on a 

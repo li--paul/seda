@@ -29,11 +29,13 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.FiniteQueue;
 import seda.sandStorm.lib.aSocket.*;
-import  java.net.*;
-import  java.io.*;
-import  java.util.*;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class PingpongUDP {
   

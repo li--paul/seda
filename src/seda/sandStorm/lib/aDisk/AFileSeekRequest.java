@@ -24,8 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * A request to seek to the given offset of the given file.

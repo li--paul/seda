@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import java.io.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * Abstract base class of I/O requests which can be posted to the

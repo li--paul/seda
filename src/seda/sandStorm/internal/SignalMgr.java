@@ -25,9 +25,12 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.SignalIF;
+import seda.sandStorm.api.SignalMgrIF;
+import seda.sandStorm.api.SinkIF;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * The SignalMgr is an implementation of SignalMgrIF. It allows stages

@@ -24,9 +24,9 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.io.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkException;
+import seda.sandStorm.core.SimpleSink;
 
 /**
  * Package-access only abstract class representing an implementation of

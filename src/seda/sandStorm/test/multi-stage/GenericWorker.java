@@ -23,7 +23,7 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
 
 /**
  * This is a 'generic' event handler used for benchmarking. It

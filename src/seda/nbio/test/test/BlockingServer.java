@@ -28,8 +28,9 @@
  * from it.
  */
 
-import java.io.*;
-import java.net.*;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class BlockingServer {
 

@@ -22,11 +22,10 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.ConfigDataIF;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileInputStream;
+import java.util.Hashtable;
 
 public class ProcessStageFileIO extends ProcessStage {
 

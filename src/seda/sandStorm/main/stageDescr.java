@@ -24,7 +24,7 @@
 
 package seda.sandStorm.main;
 
-import java.util.*;
+import java.util.Hashtable;
 
 /**
  * This is an internal class used to represent the configuration 

@@ -24,13 +24,7 @@
 
 package seda.sandStorm.lib.http;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * This class is used to wrap an HTTP response along with the 

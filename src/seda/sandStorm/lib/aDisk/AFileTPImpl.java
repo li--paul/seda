@@ -25,8 +25,12 @@
 package seda.sandStorm.lib.aDisk;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.io.*;
+import seda.sandStorm.core.FiniteQueue;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 /**
  * This is an implementation of AFile which uses a pool of threads

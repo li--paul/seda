@@ -24,7 +24,7 @@
 
 package seda.sandStorm.api.internal;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.ManagerIF;
 
 /**
  * A BatchSorterIF is used to control the sorting and dispatching of

@@ -25,14 +25,13 @@
 package seda.sandStorm.lib.aSocket.nio;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.ssLinkedList;
 import seda.sandStorm.lib.aSocket.*;
 
-import java.nio.channels.*;
-import java.nio.*;
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 
 /**
  * Internal class used to represent state of an active socket connection.

@@ -24,9 +24,7 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.PrintStream;
 
 /**
  * A Gnutella query packet.

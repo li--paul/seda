@@ -24,9 +24,12 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import java.util.Vector;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.api.internal.BatchDescrIF;
+import seda.sandStorm.api.internal.BatchSorterIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
 
 /**
  * A "null" implementation of BatchSorterIF that always releases

@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import java.io.*;
+
 
 /**
  * This class provides information about a file.

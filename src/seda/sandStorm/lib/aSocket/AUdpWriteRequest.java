@@ -24,9 +24,8 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.BufferElement;
 
 /**
  * Request to write data to a connection.

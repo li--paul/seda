@@ -23,9 +23,12 @@
  */
 
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkException;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
 
 /**
  * This handler accepts BufferElement and sends an ack of ACK_SIZE

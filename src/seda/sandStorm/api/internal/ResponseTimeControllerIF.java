@@ -24,7 +24,7 @@
 
 package seda.sandStorm.api.internal;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * This interface represents a response time controller, invoked by the

@@ -23,7 +23,8 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.ssTimer;
 
 public class TimerHandler implements EventHandlerIF {
 

@@ -24,9 +24,10 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.SinkIF;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * An ATcpClientSocket implements an asynchronous outgoing socket connection.

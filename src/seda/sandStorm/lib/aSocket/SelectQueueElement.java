@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * A SelectQueueElement is a wrapper for SelectItem which makes it a 

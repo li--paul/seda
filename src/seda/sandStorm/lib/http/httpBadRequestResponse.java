@@ -24,13 +24,8 @@
 
 package seda.sandStorm.lib.http;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.BufferElement;
 
 /**
  * An httpResponse corresponding to a '404 Bad Request' (i.e. an unknown

@@ -24,12 +24,12 @@
 
 package seda.sandStorm.lib.aSocket.nio;
 
-import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
-import seda.sandStorm.api.*;
 import seda.sandStorm.lib.aSocket.*;
-import java.net.*;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.nio.channels.SelectionKey;
 
 /**
  * The NIO implementation of aSocketImplFactory.

@@ -24,10 +24,10 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
-import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
 
 /**
  * Request to establish a connection.

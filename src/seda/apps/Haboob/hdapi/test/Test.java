@@ -25,12 +25,11 @@
 
 package seda.apps.Haboob.hdapi.test;
 
-import seda.apps.Haboob.*;
-import seda.apps.Haboob.hdapi.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.http.*;
-import seda.util.*;
+import seda.apps.Haboob.hdapi.httpRequestHandlerIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.http.httpOKResponse;
+import seda.sandStorm.lib.http.httpRequest;
+import seda.sandStorm.lib.http.httpResponse;
 
 public class Test implements httpRequestHandlerIF {
 

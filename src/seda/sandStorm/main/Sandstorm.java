@@ -25,10 +25,9 @@
 
 package seda.sandStorm.main;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.internal.SystemManagerIF;
+import seda.sandStorm.internal.sandStormMgr;
 
 /**
  * This is the top-level class which acts as the "wrapper" and 

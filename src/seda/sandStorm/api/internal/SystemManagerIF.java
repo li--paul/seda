@@ -23,7 +23,7 @@
  */
 
 package seda.sandStorm.api.internal;
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.StageIF;
 
 /**
  * SystemManagerIF is an internal interface allowing modules 

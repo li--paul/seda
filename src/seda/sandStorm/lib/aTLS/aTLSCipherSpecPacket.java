@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aTLS.protocol.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.lib.aTLS.protocol.aTLSCipherSpecRecord;
 
 /** 
  * An aTLSChangeCipherSpecPacket is passed to the handshake stage from the

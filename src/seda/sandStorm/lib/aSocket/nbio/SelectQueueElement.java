@@ -24,9 +24,7 @@
 
 package seda.sandStorm.lib.aSocket.nbio;
 
-import seda.nbio.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
+import seda.nbio.SelectItem;
 
 /**
  * A SelectQueueElement is a wrapper for SelectItem which makes it a 

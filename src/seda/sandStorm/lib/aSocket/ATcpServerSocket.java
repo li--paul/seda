@@ -24,11 +24,9 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import java.io.*;
-import java.net.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
+import seda.sandStorm.api.SinkIF;
+
+import java.io.IOException;
 
 /** 
  * This class represents an asynchronous server socket.

@@ -24,7 +24,7 @@
 
 package seda.sandStorm.api.internal;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * BatchDescrIF describes a single batch of events that has been

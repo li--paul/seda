@@ -24,12 +24,12 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkClosedException;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.ssLinkedList;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.net.Socket;
 
 /**
  * Internal class used to represent state of an active socket connection.

@@ -22,9 +22,10 @@
  * 
  */
 
-import seda.sandStorm.core.*;
-import seda.sandStorm.api.*;
-import seda.util.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.FiniteQueue;
+import seda.sandStorm.core.QueueThresholdPredicate;
+import seda.util.MDWUtil;
 
 /**
  * A simple microbenchmark measuring overheads for various queue

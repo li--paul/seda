@@ -24,12 +24,10 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.lib.aSocket.ATcpClientSocket;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
 
 /**
  * This event indicates that an attempt to establish a Gnutella

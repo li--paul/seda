@@ -25,17 +25,25 @@
 
 package seda.apps.Haboob.hdapi;
 
-import seda.apps.Haboob.hdapi.*;
-
-import seda.apps.Haboob.*;
-import seda.apps.Haboob.http.*;
+import seda.apps.Haboob.HaboobConst;
+import seda.apps.Haboob.HaboobStats;
+import seda.apps.Haboob.http.HttpSend;
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.http.*;
-import seda.sandStorm.lib.aDisk.*;
-import seda.util.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aDisk.AFile;
+import seda.sandStorm.lib.aDisk.AFileIOCompleted;
+import seda.sandStorm.lib.aDisk.AFileReadRequest;
+import seda.sandStorm.lib.http.httpInternalServerErrorResponse;
+import seda.sandStorm.lib.http.httpRequest;
+import seda.sandStorm.lib.http.httpResponder;
+import seda.sandStorm.lib.http.httpResponse;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class DynamicHttp implements EventHandlerIF, HaboobConst {
 

@@ -24,9 +24,9 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+
+import java.net.DatagramPacket;
 
 /** 
  * An AUdpInPacket represents a packet which was received from a

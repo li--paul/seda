@@ -22,10 +22,11 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.util.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.util.StatsGatherer;
+
+import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * This version changes the processing rate 'mu' according to a

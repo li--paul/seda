@@ -24,9 +24,14 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.io.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkException;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.SimpleSink;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * This class represents an asynchronous file I/O interface.

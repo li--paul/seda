@@ -24,14 +24,13 @@
 
 package seda.sandStorm.lib.aSocket.nbio;
 
-import seda.nbio.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.util.*;
+import seda.nbio.SelectItem;
+import seda.nbio.SelectSet;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.lib.aSocket.SelectSourceIF;
+import seda.util.Tracer;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.util.Random;
 
 /**
  * A SelectSource is an implementation of SourceIF which pulls events from

@@ -24,9 +24,12 @@
 
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.io.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+import seda.sandStorm.lib.aSocket.ATcpServerSocket;
+
+import java.io.IOException;
 
 /**
  * This event handmler listens for connections on the TCP port PORT

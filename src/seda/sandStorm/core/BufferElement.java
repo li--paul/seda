@@ -24,7 +24,8 @@
 
 package seda.sandStorm.core;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * A BufferElement is a QueueElementIF which represents a memory buffer.

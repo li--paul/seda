@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import java.io.*;
-import java.util.*;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 /**
  * aTLSOrderData is used to order data for the Encrypt Stage and Handshake Stage

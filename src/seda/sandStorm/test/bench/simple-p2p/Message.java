@@ -22,11 +22,9 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-
-import java.util.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpConnection;
 
 public class Message implements QueueElementIF, SimpleP2PConst {
 

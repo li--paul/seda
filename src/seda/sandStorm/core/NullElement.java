@@ -24,7 +24,7 @@
 
 package seda.sandStorm.core;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * This is a 'null' QueueElementIF implementation, which can be used

@@ -29,10 +29,14 @@
  * socket) or nonblocking socket (with a single thread).
  */
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
 import seda.nbio.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Hashtable;
 
 
 // Used to keep track of socket state for event-driven server

@@ -25,10 +25,11 @@
 package seda.sandStorm.lib.aSocket;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.SimpleSink;
+
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * An ATcpConnection represents an established connection on an asynchronous

@@ -24,17 +24,15 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
-
 import COM.claymoresystems.ptls.*;
 import COM.claymoresystems.sslg.*;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.lib.aSocket.ATcpClientSocket;
+import seda.sandStorm.main.Sandstorm;
+import seda.sandStorm.main.SandstormConfig;
+
+import java.net.InetAddress;
 
 /** 
  * An aTLSClientSocket is created to begin the connection process to the

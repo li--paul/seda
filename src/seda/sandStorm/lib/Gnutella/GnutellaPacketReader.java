@@ -24,11 +24,11 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * This is an internal class, responsible for generating GnutellaPacket

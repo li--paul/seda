@@ -24,9 +24,7 @@
 
 package seda.sandStorm.lib.aSocket.nio;
 
-import java.nio.channels.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
+import java.nio.channels.SelectionKey;
 
 /**
  * A NIOSelectorQueueElement is a wrapper for NIO's SelectionKey which makes 

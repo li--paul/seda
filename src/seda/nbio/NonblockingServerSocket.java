@@ -24,8 +24,9 @@
 
 package seda.nbio;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  * A NonblockingServerSocket implements a nonblocking variant of

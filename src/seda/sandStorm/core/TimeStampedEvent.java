@@ -23,7 +23,7 @@
  */
 
 package seda.sandStorm.core;
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * A TimeStampedEvent is an abstract superclass for events that wish

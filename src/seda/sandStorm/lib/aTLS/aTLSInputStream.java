@@ -24,7 +24,6 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import java.io.*;
 import COM.claymoresystems.ptls.*;
 
 /**

@@ -24,8 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * A completion event indicating that an IOException occurred during

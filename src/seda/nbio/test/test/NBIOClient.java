@@ -28,10 +28,8 @@
  * It creates a nonblocking socket and writes packets to it.
  */
 
-import seda.nbio.*;
-
-import java.net.*;
-import java.io.*;
+import seda.nbio.NonblockingOutputStream;
+import seda.nbio.NonblockingSocket;
 
 public class NBIOClient {
 

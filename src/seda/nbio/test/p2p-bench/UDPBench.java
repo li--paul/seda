@@ -22,9 +22,10 @@
  * 
  */
 
-import java.net.*;
-import java.io.*;
 import seda.nbio.*;
+
+import java.io.IOException;
+import java.net.*;
 
 /**
  * This is a UDP communication benchmark based on TCPBench.java.

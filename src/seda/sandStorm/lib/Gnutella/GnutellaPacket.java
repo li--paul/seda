@@ -24,12 +24,8 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.core.BufferElement;
 
 /** 
  * This is the base class for all Gnutella network packets.

@@ -25,9 +25,12 @@
 package seda.sandStorm.lib.aSocket;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.SimpleSink;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 /**
  * An AUdpSocket implements an asynchronous datagram socket. Applications 

@@ -23,8 +23,11 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aDisk.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.ssTimer;
+import seda.sandStorm.lib.aDisk.AFile;
+import seda.sandStorm.lib.aDisk.AFileIOCompleted;
+import seda.sandStorm.lib.aDisk.AFileReadRequest;
 
 /**
  * Simple test program demonstrating use of the AFile interface.

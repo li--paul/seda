@@ -24,17 +24,10 @@
 
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aTLS.*;
-import seda.sandStorm.lib.aTLS.protocol.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.main.*;
-
-import seda.sandStorm.lib.http.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.lib.aSocket.ATcpInPacket;
+import seda.sandStorm.lib.aTLS.aTLSConnection;
+import seda.sandStorm.lib.aTLS.aTLSServerSocket;
 
 public class serverTest implements EventHandlerIF {
 

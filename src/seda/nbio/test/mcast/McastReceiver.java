@@ -32,9 +32,13 @@
  * MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  **/
 
-import seda.nbio.*;
-import java.net.*;
-import java.io.*;
+import seda.nbio.NonblockingMulticastSocket;
+import seda.nbio.SelectItem;
+import seda.nbio.SelectSet;
+import seda.nbio.Selectable;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 
 /**
  * Multicast listener - writes contents of received packets to the console

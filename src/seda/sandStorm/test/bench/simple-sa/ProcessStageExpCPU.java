@@ -22,10 +22,11 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.util.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.util.MDWUtil;
+import seda.util.StatsGatherer;
+
+import java.util.Random;
 
 public class ProcessStageExpCPU extends ProcessStage {
 

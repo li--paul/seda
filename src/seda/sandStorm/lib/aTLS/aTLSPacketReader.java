@@ -24,17 +24,14 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.lib.aTLS.protocol.*;
 import COM.claymoresystems.ptls.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import seda.sandStorm.lib.util.*;
+import seda.sandStorm.lib.aSocket.aSocketInputStream;
+import seda.sandStorm.lib.aTLS.protocol.*;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.LinkedList;
 
 /**
  * An aTLSPacketReader is associated with each aTLSConnection to help order the

@@ -22,8 +22,11 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
 import seda.sandStorm.lib.http.*;
 
 /**

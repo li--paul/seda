@@ -24,7 +24,7 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * Request to the RecordStage to create an ATcpServerSocket

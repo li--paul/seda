@@ -24,11 +24,12 @@
 
 package seda.sandStorm.lib.aSocket.nbio;
 
-import java.io.*;
-import seda.nbio.*;
-import seda.sandStorm.api.*;
+import seda.nbio.SelectItem;
 import seda.sandStorm.lib.aSocket.*;
-import java.net.*;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 
 /**
  * The NBIO implementation of aSocketImplFactory.

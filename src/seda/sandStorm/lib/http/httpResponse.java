@@ -24,13 +24,9 @@
 
 package seda.sandStorm.lib.http;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
 
 /**
  * This is an abstract class corresponding to an HTTP response.

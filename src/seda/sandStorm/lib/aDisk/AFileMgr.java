@@ -24,11 +24,11 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
-import seda.sandStorm.main.*;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.internal.SystemManagerIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
+import seda.sandStorm.main.Sandstorm;
+import seda.sandStorm.main.SandstormConfig;
 
 /**
  * The AFileMgr is an internal class used to provide an interface between

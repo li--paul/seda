@@ -24,9 +24,7 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.lib.aTLS.protocol.*;
-import seda.sandStorm.api.*;
-import java.io.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /** 
  * aTLSEncryptPacket is used for any data that must

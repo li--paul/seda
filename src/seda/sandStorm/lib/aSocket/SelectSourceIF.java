@@ -24,11 +24,7 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.SourceIF;
 
 /**
  * A SelectSource is an implementation of SourceIF which pulls events from

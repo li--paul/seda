@@ -24,8 +24,10 @@
 
 package seda.sandStorm.core;
 
-import seda.sandStorm.api.*;
-import seda.util.*;
+import seda.sandStorm.api.EnqueuePredicateIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
+import seda.util.StatsGatherer;
 
 /**
  * This enqueue predicate implements input rate policing.

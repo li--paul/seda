@@ -24,8 +24,9 @@
 
 package seda.sandStorm.main;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.internal.*;
+import seda.sandStorm.api.SandstormConfigIF;
+import seda.sandStorm.api.StageNameAlreadyBoundException;
+
 import java.io.*;
 import java.util.*;
 

@@ -24,7 +24,9 @@
 
 package seda.sandStorm.core;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.EnqueuePredicateIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
 
 /**
  * This enqueue predicate implements a simple threshold for the

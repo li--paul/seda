@@ -24,11 +24,13 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.api.StageIF;
 import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
-import java.util.*;
+import seda.sandStorm.internal.NullBatchSorter;
+import seda.sandStorm.internal.Stage;
 
 /**
  * Internal stage wrapper implementation for AFileTPImpl.

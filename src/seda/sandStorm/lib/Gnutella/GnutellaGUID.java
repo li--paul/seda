@@ -24,9 +24,7 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.util.Random;
 
 /**
  * This class represents the GUID contained in Gnutella network packets.

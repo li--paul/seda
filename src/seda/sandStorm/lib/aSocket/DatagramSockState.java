@@ -24,12 +24,15 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkClosedException;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.core.BufferElement;
+import seda.sandStorm.core.ssLinkedList;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 /**
  * Internal class used to represent state of an active datagram socket.

@@ -22,11 +22,9 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-
-import java.util.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.TimeStampedEvent;
 
 public class Message extends TimeStampedEvent implements QueueElementIF, SimpleP2PConst {
 

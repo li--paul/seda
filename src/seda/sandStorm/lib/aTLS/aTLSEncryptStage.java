@@ -24,13 +24,7 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import seda.sandStorm.lib.aTLS.protocol.*;
 import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-
-import java.util.*;
-import java.io.*;
 
 /**
  * The Encrypt Stage is only used for application data packets, not for

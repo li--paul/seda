@@ -26,9 +26,8 @@ package seda.sandStorm.internal;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.api.internal.*;
-import seda.sandStorm.main.*;
-import seda.sandStorm.core.*;
-import java.util.*;
+import seda.sandStorm.core.FiniteQueue;
+import seda.sandStorm.core.QueueThresholdPredicate;
 
 /**
  * A StageWrapper is a basic implementation of StageWrapperIF for 

@@ -24,8 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * This exception is thrown when attempting to open a file that is a

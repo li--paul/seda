@@ -27,9 +27,10 @@
  * accept(), and then continuously issues nonblocking reads.
  */
 
-import seda.nbio.*;
-import java.io.*;
-import java.net.*;
+import seda.nbio.NonblockingServerSocket;
+import seda.nbio.NonblockingSocket;
+
+import java.io.InputStream;
 
 public class NBIOServer {
 

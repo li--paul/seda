@@ -23,7 +23,7 @@
  */
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
 
 public class GenericHandler implements EventHandlerIF {
 

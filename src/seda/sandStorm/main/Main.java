@@ -24,10 +24,8 @@
 
 package seda.sandStorm.main;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
+import seda.sandStorm.internal.sandStormConst;
+
 import java.io.IOException;
 import java.util.Date;
 

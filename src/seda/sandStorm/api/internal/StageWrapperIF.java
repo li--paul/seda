@@ -24,7 +24,9 @@
 
 package seda.sandStorm.api.internal;
 
-import seda.sandStorm.api.*;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.api.StageIF;
 
 /**
  * A StageWrapperIF is the internal representation for an application 

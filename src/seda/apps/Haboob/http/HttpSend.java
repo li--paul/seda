@@ -24,10 +24,12 @@
 
 package seda.apps.Haboob.http;
 
+import seda.apps.Haboob.HaboobConst;
+import seda.apps.Haboob.HaboobStats;
 import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.http.*;
-import seda.apps.Haboob.*;
+import seda.sandStorm.lib.http.httpConnection;
+import seda.sandStorm.lib.http.httpResponder;
+
 import java.util.Hashtable;
 
 /**

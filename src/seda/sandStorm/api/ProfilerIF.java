@@ -25,8 +25,6 @@
 package seda.sandStorm.api;
 
 import seda.sandStorm.internal.StageGraph;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * A ProfilerIF is responsible for profiling the behavior of the system

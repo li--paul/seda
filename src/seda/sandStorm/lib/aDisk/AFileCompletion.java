@@ -24,8 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import java.io.*;
+import seda.sandStorm.api.QueueElementIF;
 
 /**
  * Abstract base class of AFile I/O completion events.

@@ -24,16 +24,15 @@
 
 package seda.sandStorm.lib.aTLS.http;
 
-import seda.sandStorm.lib.http.*;
-import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import seda.sandStorm.lib.aTLS.*;
-
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.lib.aTLS.aTLSServerSocket;
+import seda.sandStorm.lib.http.httpConnection;
+import seda.sandStorm.lib.http.httpConst;
+import seda.sandStorm.lib.http.httpRequest;
+import seda.sandStorm.lib.http.httpServer;
 
 /**
  * An httpSecureServer is a SandStorm stage which accepts incoming HTTP 

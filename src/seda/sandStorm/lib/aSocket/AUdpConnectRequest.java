@@ -24,8 +24,9 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import java.net.*;
+import seda.sandStorm.api.QueueElementIF;
+
+import java.net.InetAddress;
 
 /**
  * Request to connect a UDP socket.

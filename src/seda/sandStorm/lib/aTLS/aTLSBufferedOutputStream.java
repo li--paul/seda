@@ -24,8 +24,11 @@
 
 package seda.sandStorm.lib.aTLS;
 
-import java.io.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.core.BufferElement;
+
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * In order to properly handle the sending of data, needed to overwrite

@@ -24,8 +24,8 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.core.BufferElement;
 
 /**
  * A request to write to a file.

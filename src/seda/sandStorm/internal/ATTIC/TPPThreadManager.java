@@ -24,11 +24,14 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import java.util.*;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SourceIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
+import seda.sandStorm.main.SandstormConfig;
+
+import java.util.Enumeration;
+import java.util.Vector;
 
 /**
  * TPPThreadManager is a thread manager implementation which provides

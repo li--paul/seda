@@ -24,8 +24,7 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import java.io.*;
+
 
 /**
  * Completion event indicating that a previous I/O request on the

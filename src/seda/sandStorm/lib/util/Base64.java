@@ -22,9 +22,9 @@
 
 package seda.sandStorm.lib.util;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import java.util.*;
+import seda.sandStorm.core.BufferElement;
+
+import java.util.StringTokenizer;
 
 /**
  * Encode and decode Base64 data. 

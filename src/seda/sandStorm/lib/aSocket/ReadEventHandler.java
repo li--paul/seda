@@ -24,13 +24,12 @@
 
 package seda.sandStorm.lib.aSocket;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.util.Tracer;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
 
 /**
  * Internal event handler used to process socket read events.

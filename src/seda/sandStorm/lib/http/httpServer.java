@@ -26,12 +26,9 @@ package seda.sandStorm.lib.http;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * An httpServer is a SandStorm stage which accepts incoming HTTP 

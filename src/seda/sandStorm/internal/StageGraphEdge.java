@@ -24,12 +24,8 @@
 
 package seda.sandStorm.internal;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.SinkIF;
+import seda.sandStorm.api.internal.StageWrapperIF;
 
 /**
  * This class represents an edge in the stage-connectivity graph.

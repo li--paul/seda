@@ -22,13 +22,11 @@
  * 
  */
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.util.*;
-import  java.net.*;
-import  java.io.*;
-import  java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.QueueElementIF;
+import seda.util.MDWUtil;
+import seda.util.StatsGatherer;
 
 public class ClientStageMulticlass extends ClientStage 
   implements EventHandlerIF, SimpleP2PConst {

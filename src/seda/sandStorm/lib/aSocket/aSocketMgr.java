@@ -25,15 +25,12 @@
 package seda.sandStorm.lib.aSocket;
 
 import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.internal.*;
-import seda.sandStorm.main.*;
-import seda.util.*;
-
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import seda.sandStorm.api.internal.SystemManagerIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
+import seda.sandStorm.internal.ConfigData;
+import seda.sandStorm.main.Sandstorm;
+import seda.sandStorm.main.SandstormConfig;
+import seda.util.Tracer;
 
 /**
  * The aSocketMgr is an internal class used to provide an interface between

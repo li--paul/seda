@@ -25,17 +25,13 @@
 package seda.sandStorm.lib.aTLS;
 
 import COM.claymoresystems.ptls.*;
-import seda.sandStorm.lib.aTLS.protocol.*;
 import seda.sandStorm.api.*;
-import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
+import seda.sandStorm.lib.aTLS.protocol.aTLSHandshakeRecord;
+import seda.sandStorm.lib.aTLS.protocol.aTLSRecord;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
-import java.security.*;
-import java.lang.*;
+import java.io.ByteArrayInputStream;
+import java.io.PushbackInputStream;
+import java.util.LinkedList;
 
 /**
  * aTLSHandshakeStage is a SandStorm stage that deals exclusively with the handshake protocol.

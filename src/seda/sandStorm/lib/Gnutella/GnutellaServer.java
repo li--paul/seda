@@ -25,13 +25,16 @@
 package seda.sandStorm.lib.Gnutella;
 
 import seda.sandStorm.api.*;
+import seda.sandStorm.core.BufferElement;
 import seda.sandStorm.lib.aSocket.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.main.*;
 
-import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * A GnutellaServer is a SandStorm stage which allows outgoing connections

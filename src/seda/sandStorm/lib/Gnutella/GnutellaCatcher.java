@@ -34,12 +34,14 @@
 
 package seda.sandStorm.lib.Gnutella;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
-import seda.sandStorm.lib.aSocket.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import seda.sandStorm.api.ConfigDataIF;
+import seda.sandStorm.api.EventHandlerIF;
+import seda.sandStorm.api.ManagerIF;
+import seda.sandStorm.api.QueueElementIF;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Hashtable;
 
 public class GnutellaCatcher implements EventHandlerIF {
 

@@ -24,9 +24,8 @@
 
 package seda.sandStorm.lib.aDisk;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.api.internal.*;
-import java.io.*;
+import seda.sandStorm.api.internal.StageWrapperIF;
+import seda.sandStorm.api.internal.ThreadManagerIF;
 
 /**
  * Internal abstract class used to represent an AFile thread manager.

@@ -22,11 +22,17 @@
  * 
  */
 
-import java.net.*;
+import seda.util.MDWUtil;
+import seda.util.StatsGatherer;
+
 import java.io.*;
-import java.util.*;
-import java.text.*;
-import seda.util.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Random;
 
 /**
  * This is an HTTP load generator which operates similarly to that used

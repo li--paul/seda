@@ -24,14 +24,15 @@
 
 package seda.sandStorm.lib.aSocket.nbio;
 
-import seda.sandStorm.api.*;
-import seda.sandStorm.core.*;
+import seda.nbio.NonblockingSocket;
+import seda.nbio.SelectItem;
+import seda.nbio.Selectable;
+import seda.sandStorm.api.QueueElementIF;
+import seda.sandStorm.api.SinkException;
 import seda.sandStorm.lib.aSocket.*;
-import seda.nbio.*;
 
-import java.net.*;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Internal class used to represent state of a socket while an 
