@@ -42,6 +42,7 @@ class SelectSetPollImpl extends SelectSetImpl {
   private int cachedActiveCount = -1;
 
   private native int doSelect(int timeout);
+  public native void interruptSelect();
 
   // Push the internal vector to itemarr.
   private void itemarrupdate() {

@@ -61,6 +61,8 @@ class SelectSetDevPollImpl extends SelectSetImpl {
   // Actually do select; return number of events 
   // Places returned events in retevents array
   private native int doSelect(int timeout, int num_fds_to_poll);
+  // Does a signal to knock pollers out of wait.
+  public native void interruptSelect();
 
   // Copy vec into itemarr
   private void updateitemarr() {

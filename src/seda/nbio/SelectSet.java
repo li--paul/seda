@@ -248,4 +248,9 @@ public class SelectSet {
     return s;
   }
 
+    public void interruptSelect() {
+	if (DEBUG)System.err.println("SelectSet.interruptSelect() called.");
+	impl.interruptSelect();
+    }
+
 }

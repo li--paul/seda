@@ -46,6 +46,7 @@ abstract class SelectSetImpl {
   abstract int select(int timeout);
   abstract SelectItem[] getEvents(short mask);
   abstract SelectItem[] getEvents();
+  abstract void interruptSelect();
 
 }
 
