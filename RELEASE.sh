@@ -13,24 +13,25 @@ rm -rf $RELEASE_DIR
 mkdir -p $RELEASE_DIR
 cd $RELEASE_DIR
 echo "Unpacking from CVS archive..."
-CVSROOT=/home/cs/mdw/repository cvs -Q co mdw 
+export CVS_RSH=ssh
+cvs -z3 -d:ext:mdwelsh@cvs.seda.sourceforge.net:/cvsroot/seda -Q co seda
 find . -name CVS | xargs rm -r
 
 echo "Performing test build..."
-cd mdw
+cd seda/src/seda
 make clean
-export CLASSPATH=.:$RELEASE_DIR:$RELEASE_DIR/mdw/lib/collections.jar
-export LD_LIBRARY_PATH=$RELEASE_DIR/mdw/lib
+export CLASSPATH=.:$RELEASE_DIR/seda/src
+export LD_LIBRARY_PATH=$RELEASE_DIR/seda/lib
 make || { echo "Build of release failed with errors, exiting"; exit 1; }
 make clean
 
 echo "Publishing javadoc documentation..."
-cd $RELEASE_DIR/mdw/sandStorm/docs/javadoc
+cd $RELEASE_DIR/seda/docs/javadoc
 make || { echo "Build of release failed with errors, exiting"; exit 1; }
 rm -rf $PUBLIC_DIR/javadoc
-cd $RELEASE_DIR/mdw/sandStorm/docs
+cd $RELEASE_DIR/seda/docs
 tar cf - javadoc | (cd $PUBLIC_DIR; tar xf -)
-cd $RELEASE_DIR/mdw/sandStorm/docs/javadoc
+cd $RELEASE_DIR/seda/docs/javadoc
 make clean
 
 echo "Creating $RELEASE.tar.gz..."
@@ -44,4 +45,5 @@ cd $PUBLIC_DIR
 ln -sf $RELEASE.tar.gz seda-release-current.tar.gz
 
 echo "Don't forget to tag CVS: cvs tag $RELEASE"
+echo "Don't forget to FTP $RELEASE to upload.sourceforge.net/incoming"
 echo "Done."
