@@ -183,6 +183,8 @@ static int nbio_init_fids(JNIEnv *env) {
 #undef NBIO_GET_CLASS
 #undef NBIO_GET_FIELD
 
+  _nbio_fids_init = 1;
+
   return 0;
 
 }
