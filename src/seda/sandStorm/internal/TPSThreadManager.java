@@ -46,6 +46,7 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
   protected SandstormConfig config;
   protected Hashtable srTbl;
   protected ThreadPoolController sizeController;
+  protected boolean crashOnException;
 
   public TPSThreadManager(ManagerIF mgr) {
     this(mgr, true);
@@ -61,6 +62,8 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
       }
       srTbl = new Hashtable();
     }
+
+    crashOnException = config.getBoolean("global.crashOnException");
   }
 
   /**
@@ -238,8 +241,12 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
 	  Thread.currentThread().yield();
 
 	} catch (Exception e) {
-	  System.err.println("TPSThreadManager: appThread ["+name+"] got exception "+e);
+	  System.err.println("Sandstorm: Stage <"+name+"> got exception: "+e);
 	  e.printStackTrace();
+	  if (crashOnException) {
+	    System.err.println("Sandstorm: Crashing runtime due to exception - goodbye");
+	    System.exit(-1);
+	  }
 	}
       }
     }

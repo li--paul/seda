@@ -920,6 +920,19 @@ These options are:
 </dl>
 
 <p>
+<dl>
+<dt> <tt>crashOnException</tt> <font color=red>boolean</font>
+<dd><b>(Optional)</b>
+If set to true, causes Sandstorm to exit immediately if any
+stage event handler or <tt>init()</tt> method throws an unhandled 
+exception. Meant to induce "fail stop" behavior in Sandstorm.
+If set to false (the default), unhandled exceptions are logged to
+stderr but the system continues running.
+
+<p>
+<b>SandstormConfig class</b>
+
+<p>
 The programmatic interface for configuring the Sandstorm system is given
 by the class <tt>seda.sandStorm.main.SandstormConfig</tt>. This class
 allows the system to manipulate arbitrary key/value pairs (where both

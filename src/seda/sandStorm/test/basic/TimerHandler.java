@@ -52,6 +52,7 @@ public class TimerHandler implements EventHandlerIF {
 
     timer = new ssTimer();
     timer.registerEvent(DELAY_TIME, new BufferElement(200), mysink);
+
   }
 
   public void destroy() {
@@ -67,7 +68,6 @@ public class TimerHandler implements EventHandlerIF {
     }
 
     timer.registerEvent(DELAY_TIME, item, mysink);
-
   }
 
   public void handleEvents(QueueElementIF items[]) {

@@ -57,6 +57,7 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
   private boolean started = false;
   private sandStormProfiler profiler;
   private SignalMgr signalMgr;
+  private boolean crashOnException = false;
 
   /**
    * Create a sandStormMgr which reads its configuration from the 
@@ -70,6 +71,7 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     stagestoinit = new Vector();
     signalMgr = new SignalMgr();
 
+    crashOnException = mgrconfig.getBoolean("global.crashOnException");
     String dtm = mgrconfig.getString("global.defaultThreadManager");
     if (dtm == null) {
       throw new IllegalArgumentException("No threadmanager specified by configuration");
@@ -241,7 +243,17 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     }
 
     if (initialize) {
-      wrapper.init();
+      try {
+	wrapper.init();
+      } catch (Exception e) {
+	System.err.println("Sandstorm: Got exception initializing stage "+name);
+	e.printStackTrace();
+	if (crashOnException) {
+	  System.err.println("Sandstorm: Crashing runtime due to exception - goodbye");
+	  System.exit(-1);
+	}
+	throw e;
+      }
     } else {
       stagestoinit.addElement(wrapper);
     }
@@ -282,8 +294,10 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
       } catch (Exception ex) {
 	System.err.println("Sandstorm: Caught exception initializing stage "+wrapper.getStage().getName()+": "+ex);
 	ex.printStackTrace();
-	System.err.println("Sandstorm: Exiting.");
-	System.exit(-1);
+	if (crashOnException) {
+	  System.err.println("Sandstorm: Crashing runtime due to exception - goodbye");
+	  System.exit(-1);
+	}
       }
     }
 
