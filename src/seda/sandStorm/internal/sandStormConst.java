@@ -31,8 +31,8 @@ package seda.sandStorm.internal;
  */
 public interface sandStormConst {
 
-  public static final int MAJOR_VERSION = 2;
-  public static final int MINOR_VERSION = 2;
+  public static final int MAJOR_VERSION = 3;
+  public static final int MINOR_VERSION = 0;
   public static final String VERSION_STRING = MAJOR_VERSION+"."+MINOR_VERSION;
   public static final String WELCOME_STRING = "Sandstorm v"+VERSION_STRING+" <mdw@cs.berkeley.edu>";
 
