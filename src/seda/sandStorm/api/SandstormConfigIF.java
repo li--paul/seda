@@ -65,5 +65,18 @@ public interface SandstormConfigIF {
    */
   public Enumeration getStages();
 
+  /**
+   * Return an enumeration of the keys matching the given prefix.
+   * A given key maps onto a set of child keys if it ends in a
+   * "." character (that is, it is an internal node within the tree).
+   * A key not ending in "." is a terminal node and maps onto a
+   * value that may be obtained using getString, getInt, or getDouble.
+   */
+  public Enumeration getKeys(String prefix);
+
+  /**
+   * Return an enumeration of the top-level keys in this configuration.
+   */
+  public Enumeration getKeys() ;
 
 }
