@@ -87,7 +87,7 @@ class StageWrapper implements StageWrapperIF {
   private void setup() {
     System.err.print("Creating Stage <"+name+">");
 
-    SandstormConfig mgrcfg = mgr.getConfig();
+    SandstormConfigIF mgrcfg = mgr.getConfig();
 
     if (mgrcfg.getBoolean("global.batchController.enable")) {
       System.err.print(", batch controller enabled");
@@ -100,11 +100,24 @@ class StageWrapper implements StageWrapperIF {
     this.stage = new Stage(name, this, (SinkIF)eventQ, config);
     config.setStage(this.stage);
 
-    boolean rtControllerEnabled = mgr.getConfig().getBoolean("global.rtController.enable");
-    String deftype = mgr.getConfig().getString("global.rtController.type");
-    if (mgr.getConfig().getBoolean("stages."+name+".rtController.enable", rtControllerEnabled)) {
-      System.err.print("response time controller type ");
-      String contype = mgr.getConfig().getString("stages."+name+".rtController.type", deftype);
+    SandstormConfigIF sandstormConfig = mgr.getConfig();
+    boolean rtControllerEnabled = sandstormConfig.getBoolean("global.rtController.enable");
+    String defType = sandstormConfig.getString("global.rtController.type");
+
+    // override from stage config
+    rtControllerEnabled = sandstormConfig.getBoolean( "stages." + name + ".rtController.enable", rtControllerEnabled);
+    String contype = sandstormConfig.getString("stages." + name + ".rtController.type", defType);
+
+    // override from stage config
+    if (config.contains("rtController.enable")) {
+        rtControllerEnabled = config.getBoolean("rtController.enable");
+    }
+    
+    if (config.contains("rtController.type")) {
+        contype = config.getString("rtController.type");
+    }
+    
+    if (rtControllerEnabled) {
       if (contype == null) {
 	System.err.print("direct");
 	this.rtcon = new ResponseTimeControllerDirect(mgr, this);

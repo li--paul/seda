@@ -77,7 +77,7 @@ class AggThrottle {
     this.stage = stage;
     this.name = stage.getStage().getName();
     this.mgr = mgr;
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
 
     this.minAggregation = config.getInt("global.batchController.minBatch", 
 	minAggregation);

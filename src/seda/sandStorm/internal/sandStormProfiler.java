@@ -50,7 +50,7 @@ class sandStormProfiler extends Thread implements sandStormConst, ProfilerIF {
 
   sandStormProfiler(ManagerIF mgr) throws IOException {
     graphProfiler = new StageGraph(mgr);
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     delay = config.getInt("global.profile.delay");
     String filename = config.getString("global.profile.filename");
     if (config.getBoolean("global.profile.enable")) {

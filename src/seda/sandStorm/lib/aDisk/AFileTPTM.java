@@ -84,7 +84,7 @@ class AFileTPTM extends TPSThreadManager implements ThreadManagerIF, ProfilableI
   public void register(StageWrapperIF stage) {
     // Create a single threadPool - only one stage registered with us
     AFileTPThread at = new AFileTPThread((AFileTPStageWrapper)stage);
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     ThreadPool tp = new ThreadPool(stage, mgr, at,
 	config.getInt("global.aDisk.threadPool.initialThreads"),
 	config.getInt("global.aDisk.threadPool.minThreads"),

@@ -23,7 +23,6 @@
  */
 
 package seda.sandStorm.api;
-import seda.sandStorm.main.*;
 
 /**
  * ManagerIF represents the system manger, which provides various 
@@ -91,6 +90,6 @@ public interface ManagerIF {
    * any options of this copy does not in fact change the runtime parameters
    * of the system; this is used for informational purposes only.
    */
-  public SandstormConfig getConfig();
+  public SandstormConfigIF getConfig();
 
 }

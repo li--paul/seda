@@ -81,8 +81,11 @@ public class httpServer implements EventHandlerIF, httpConst {
     // Create the stage and register it
     String sname = "httpServer "+num_svrs+" <port "+listenPort+">";
     // Disable the RT controller for this stage
-    mgr.getConfig().putBoolean("stages."+sname+".rtController.enable", false);
-    mgr.createStage(sname, this, null);
+    //mgr.getConfig().putBoolean("stages."+sname+".rtController.enable", false);
+    //mgr.createStage(sname, this, null);
+    mgr.createStage(sname, this, new String[] {
+    		"rtController.enable=false"
+    } );
     num_svrs++;
   }
 
@@ -134,7 +137,7 @@ public class httpServer implements EventHandlerIF, httpConst {
 
       // Profile the connection if profiling enabled
       ProfilerIF profiler = mgr.getProfiler();
-      SandstormConfig cfg = mgr.getConfig();
+      SandstormConfigIF cfg = mgr.getConfig();
       if ((profiler != null) && cfg.getBoolean("global.profile.sockets")) profiler.add(conn.toString(), conn);
       conn.startReader(mySink);
 

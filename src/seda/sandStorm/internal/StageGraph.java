@@ -51,7 +51,7 @@ public class StageGraph {
   private PrintWriter graphpw = null;
 
   StageGraph(ManagerIF mgr) {
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     boolean dumpModuleGraph = config.getBoolean("global.profile.graph");
     if (dumpModuleGraph) {
       String gfilename = config.getString("global.profile.graphfilename");

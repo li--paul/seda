@@ -40,7 +40,7 @@ import java.util.*;
  * @see Main
  *
  */
-public class SandstormConfig implements Cloneable {
+public class SandstormConfig implements Cloneable,SandstormConfigIF {
 
   private static final boolean DEBUG = false;
   private static final String DELIM_CHAR = ".";

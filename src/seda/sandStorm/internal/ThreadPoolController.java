@@ -66,7 +66,7 @@ public class ThreadPoolController {
     this.mgr = mgr;
     tpvec = new Vector();
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     this.controllerDelay = config.getInt("global.threadPool.sizeController.delay");
     this.controllerThreshold = config.getInt("global.threadPool.sizeController.threshold");
     this.autoMaxDetect = config.getBoolean("global.threadPool.sizeController.autoMaxDetect");
@@ -78,7 +78,7 @@ public class ThreadPoolController {
     this.mgr = mgr;
     tpvec = new Vector();
     this.controllerDelay = delay;
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     if (this.controllerDelay == -1) {
       this.controllerDelay = config.getInt("global.threadPool.sizeController.delay");
     }
@@ -96,7 +96,7 @@ public class ThreadPoolController {
    * specified by the system configuration.
    */
   public void register(StageWrapperIF stage, ThreadPool tp) {
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     int thresh = config.getInt("stages."+stage.getStage().getName()+".threadPool.sizeController.threshold", controllerThreshold);
     tpvec.addElement(new tpcClient(stage, tp, null, thresh));
   }

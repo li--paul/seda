@@ -204,7 +204,7 @@ public class ResponseTimeControllerMulticlass extends ResponseTimeControllerDire
 
     this.name = stage.getStage().getName();
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     // First count number of classes
     for (int c = 0; c < MAX_CLASSES; c++) {
       double t = config.getDouble("stages."+name+".rtController.multiclass.class"+(c)+"Target");

@@ -55,7 +55,7 @@ public class Stage implements StageIF {
     this.name = name;
     this.wrapper = wrapper;
 
-    SandstormConfig cf = config.getManager().getConfig();
+    SandstormConfigIF cf = config.getManager().getConfig();
     this.mainsink = mainsink;
 
     if (ENABLE_SINK_PROXY && 

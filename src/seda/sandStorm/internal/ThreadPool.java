@@ -63,7 +63,7 @@ public class ThreadPool implements ProfilableIF {
     this.mgr = mgr;
     this.runnable = runnable;
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     threads = new Vector();
     stoppedThreads = new Vector();
 
@@ -110,7 +110,7 @@ public class ThreadPool implements ProfilableIF {
     this.mgr = mgr;
     this.runnable = runnable;
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     threads = new Vector();
     stoppedThreads = new Vector();
     if (initialThreads < 1) initialThreads = 1;
@@ -139,7 +139,7 @@ public class ThreadPool implements ProfilableIF {
     this.mgr = mgr;
     this.runnable = runnable;
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     threads = new Vector();
     stoppedThreads = new Vector();
     maxThreads = minThreads = numThreads;

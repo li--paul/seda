@@ -265,7 +265,7 @@ public class GnutellaServer implements EventHandlerIF, GnutellaConst {
 
     // Profile the connection if profiling enabled
     ProfilerIF profiler = mgr.getProfiler();
-    SandstormConfig cfg = mgr.getConfig();
+    SandstormConfigIF cfg = mgr.getConfig();
     if ((profiler != null) && (cfg.getBoolean("global.profile.sockets"))) profiler.add(conn.toString(), conn);
 
     if (DEBUG) System.err.println("GnutellaServer: handleIncomingConnection doing startReader");

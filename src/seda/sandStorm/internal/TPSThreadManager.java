@@ -43,7 +43,7 @@ public class TPSThreadManager implements ThreadManagerIF, sandStormConst {
   private static final boolean DEBUG_VERBOSE = false;
 
   protected ManagerIF mgr;
-  protected SandstormConfig config;
+  protected SandstormConfigIF config;
   protected Hashtable srTbl;
   protected ThreadPoolController sizeController;
   protected boolean crashOnException;

@@ -50,7 +50,7 @@ public abstract class ResponseTimeController implements ResponseTimeControllerIF
   protected ResponseTimeController(ManagerIF mgr, StageWrapperIF stage) throws IllegalArgumentException {
     this.stage = stage;
 
-    SandstormConfig config = mgr.getConfig();
+    SandstormConfigIF config = mgr.getConfig();
     this.targetRT = config.getDouble("stages."+stage.getStage().getName()+".rtController.targetResponseTime");
     if (this.targetRT == -1) {
       this.targetRT = config.getDouble("global.rtController.targetResponseTime");

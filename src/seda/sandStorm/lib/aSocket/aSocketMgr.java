@@ -68,7 +68,7 @@ public class aSocketMgr {
     synchronized (init_lock) {
       if (PROFILE) tracer = new Tracer("aSocketMgr");
 
-      SandstormConfig cfg = mgr.getConfig();
+      SandstormConfigIF cfg = mgr.getConfig();
 
       String provider = cfg.getString("global.aSocket.provider");
       if (provider == null) {

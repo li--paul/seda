@@ -279,7 +279,7 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
    * Actually returns a copy of the SandstormConfig; this prevents
    * options from being changed once the system has been initialized.
    */
-  public SandstormConfig getConfig() {
+  public SandstormConfigIF getConfig() {
     return mgrconfig.getCopy();
   }
 
