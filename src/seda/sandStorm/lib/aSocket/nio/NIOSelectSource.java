@@ -213,16 +213,16 @@ public class NIOSelectSource implements SelectSourceIF {
    * interest mask.
    */
   public int numActive() {
-    // does this mean number with a non-zero request mask, or number
-    // in selectedKeys()
-    Iterator key_iter = selector.keys().iterator();
-    SelectionKey sk;
-    int n_active = 0;
-    while (key_iter.hasNext()) {
-        sk = (SelectionKey)key_iter.next();
-        if (sk.isValid() && sk.interestOps() != 0) n_active++;
+    synchronized(blocker) {
+      Iterator key_iter = selector.keys().iterator();
+      SelectionKey sk;
+      int n_active = 0;
+      while (key_iter.hasNext()) {
+	sk = (SelectionKey)key_iter.next();
+	if (sk.isValid() && sk.interestOps() != 0) n_active++;
+      }
+      return n_active;
     }
-    return n_active;
   }
 
   /**
