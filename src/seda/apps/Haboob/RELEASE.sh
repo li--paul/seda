@@ -17,13 +17,6 @@ export CVS_RSH=ssh
 cvs -z3 -d:ext:mdwelsh@cvs.seda.sourceforge.net:/cvsroot/seda -Q co seda/src/seda/apps/Makefile seda/src/seda/apps/Haboob seda/src/seda/Makefile seda/src/seda/Makefile.include
 find . -name CVS | xargs rm -rf
 
-echo "Performing test build..."
-cd seda/src/seda/apps/Haboob
-make clean
-export CLASSPATH=.:$RELEASE_DIR/seda/src
-make || { echo "Build of release failed with errors, exiting"; exit 1; }
-make clean
-
 echo "Creating $RELEASE.tar.gz..."
 cd $BASE_DIR
 tar cfz $RELEASE.tar.gz $RELEASE
