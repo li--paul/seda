@@ -102,21 +102,21 @@ public class aSocketInputStream extends MultiByteArrayInputStream {
       // differently than (sn > nextSeqNum), since we have
       // wraparound.
       outoforder.add(pkt);
+    }
 
-      // Push any 'ready' outoforder elements
-      try {
-	ATcpInPacket first = (ATcpInPacket)outoforder.first();
-	while (first != null && first.seqNum == nextSeqNum) {
-	  outoforder.remove(first);
-	  addArray(first.getBytes());
-	  nextSeqNum++;
-	  // seqNum of 0 is special
-	  if (nextSeqNum == 0) nextSeqNum = 1;
-	  first = (ATcpInPacket)outoforder.first();
-	}
-      } catch (NoSuchElementException e) {
-	// Ignore
+    // Push any 'ready' outoforder elements
+    try {
+      ATcpInPacket first = (ATcpInPacket)outoforder.first();
+      while (first != null && first.seqNum == nextSeqNum) {
+	outoforder.remove(first);
+	addArray(first.getBytes());
+	nextSeqNum++;
+	// seqNum of 0 is special
+	if (nextSeqNum == 0) nextSeqNum = 1;
+	first = (ATcpInPacket)outoforder.first();
       }
+    } catch (NoSuchElementException e) {
+      // Ignore
     }
   }
 
