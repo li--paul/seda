@@ -96,6 +96,8 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
     return port;
   }
 
+  public boolean isClosed() { return closed; }
+
   /**
    * Return the ATcpServerSocket from which this connection came.
    * Returns null if this connection resulted from an ATcpClientSocket.
