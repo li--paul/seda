@@ -45,5 +45,5 @@ cd $PUBLIC_DIR
 ln -sf $RELEASE.tar.gz seda-release-current.tar.gz
 
 echo "Don't forget to tag CVS: cvs tag $RELEASE"
-echo "Don't forget to FTP $RELEASE to upload.sourceforge.net/incoming"
+echo "Don't forget to FTP $RELEASE to ftp://upload.sourceforge.net/incoming"
 echo "Done."

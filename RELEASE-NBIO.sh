@@ -14,11 +14,11 @@ mkdir -p $RELEASE_DIR
 cd $RELEASE_DIR
 echo "Unpacking from CVS archive..."
 export CVS_RSH=ssh
-cvs -z3 -d:ext:mdwelsh@cvs.seda.sourceforge.net:/cvsroot/seda -Q co seda/docs seda/lib seda/README seda/src/nbio seda/src/Makefile seda/src/Makefile.include
+cvs -z3 -d:ext:mdwelsh@cvs.seda.sourceforge.net:/cvsroot/seda -Q co seda/docs seda/lib seda/README seda/src/seda/nbio seda/src/seda/Makefile seda/src/seda/Makefile.include
 find . -name CVS | xargs rm -r
 
 echo "Performing test build..."
-cd seda
+cd seda/src/seda
 make clean
 export CLASSPATH=.:$RELEASE_DIR/seda/src
 export LD_LIBRARY_PATH=$RELEASE_DIR/seda/lib
@@ -43,7 +43,7 @@ rm -rf $RELEASE
 echo "Copying $RELEASE.tar.gz to $PUBLIC_DIR..."
 cp $RELEASE.tar.gz $PUBLIC_DIR
 
-echo "Don't forget to FTP $RELEASE to upload.sourceforge.net/incoming"
+echo "Don't forget to FTP $RELEASE to ftp://upload.sourceforge.net/incoming"
 echo "Done."
 
 #echo "Don't forget to tag CVS: cvs tag $RELEASE"
