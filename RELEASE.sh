@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Generate a snapshot release of the 'mdw' directory
+# Generate a release of the SEDA directory
 
 BASE_DIR=$HOME/src/releases
 RELEASE=seda-release-`date +%Y%m%d`
@@ -19,6 +19,7 @@ find . -name CVS | xargs rm -r
 
 # Remove files that should not be in the release
 rm -rf seda/src/seda/apps
+rm -rf seda/src/seda/sandStorm/lib/aTLS
 
 echo "Performing test build..."
 cd seda/src/seda
