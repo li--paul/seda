@@ -26,6 +26,11 @@
  * This file implements the native method bindings for the nbio library.
  */
 
+#ifdef SOLARIS
+// Needed for errno etc. to work correctly
+#define _REENTRANT
+#endif
+
 #include <jni.h>
 #include <stdio.h>
 #include <stdlib.h>
