@@ -53,6 +53,7 @@ public class aSocketMgr {
   private static SinkIF write_sink;
 
   private static ReadEventHandler read_handler;
+  private static ListenEventHandler 
 
   private static Object init_lock = new Object();
   private static boolean initialized = false;
@@ -70,7 +71,7 @@ public class aSocketMgr {
     synchronized (init_lock) {
       if (PROFILE) tracer = new Tracer("aSocketMgr");
 
-      SandstormConfig cfg = mgr.getConfig();
+      SandstormConfigIF cfg = mgr.getConfig();
 
       String provider = cfg.getString("global.aSocket.provider");
       if (provider == null) {
@@ -99,7 +100,7 @@ public class aSocketMgr {
       sysmgr.addThreadManager("aSocket", aSocketTM);
 
       ReadEventHandler revh = new ReadEventHandler();
-      read_handler = revh;
+      read_handler = revh;	// save this for calls to interruptSelect.
       aSocketStageWrapper rsw;
       if (cfg.getBoolean("global.aSocket.governor.enable")) {
 	aSocketRCTM = new aSocketRCTMSleep(mgr);
