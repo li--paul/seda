@@ -464,7 +464,7 @@ public class NIOSelectSource implements SelectSourceIF {
       	Iterator key_iter = skeys.iterator();
 
        	int j = 0;
-	while (key_iter.hasNext()) {
+	while (key_iter.hasNext() && j < ret.length) {
 	  ret[j] = (SelectionKey)key_iter.next();
 	  key_iter.remove();
 	  j++;
