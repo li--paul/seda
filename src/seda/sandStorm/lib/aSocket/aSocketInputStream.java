@@ -45,8 +45,8 @@ public class aSocketInputStream extends MultiByteArrayInputStream {
 
   private static final boolean DEBUG = false;
 
-  private TreeSet outoforder;
-  private long nextSeqNum;
+  protected TreeSet outoforder;
+  protected long nextSeqNum;
 
   /**
    * Create an aSocketInputStream with an initial sequence number of 1.
