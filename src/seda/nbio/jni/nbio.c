@@ -79,7 +79,8 @@
 #include "SelectSetPollImpl.h"
 #include "mdw-exceptions.h"
 
-#define DEBUG(_x)
+#define DEBUG(_x) 
+
 
 /* Constants *****************************************************************/
 
@@ -1553,7 +1554,6 @@ JNIEXPORT jboolean JNICALL Java_seda_nbio_SelectSetDevPollImpl_supported(JNIEnv 
 /* Max number of file descriptors if flat table used */
 	#define MAX_FDS 32768
 
-
 typedef struct devpoll_impl_state {
 	int devpoll_fd;
 	int max_retevents;
@@ -1784,7 +1784,7 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 	int itemarrlen, retitemarrlen, ret, i, retfd, count;
 	struct pollfd *pfd;
 	short realevents;
-	int wfd = state->wakeup_sockets[1]; // wakeup socket fd.
+	int wfd = -1;		/* wakeup (interrupt) file descriptor */
 
 
 	DEBUG(fprintf(stderr,"SelectSetDevPollImpl.doSelect called\n"));
@@ -1845,9 +1845,12 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 	// we assign SelectItems to retitemarr
 	(*env)->MonitorEnter(env, this); 
 
+	wfd = state->wakeup_sockets[1]; // wakeup socket fd.
 	count = 0;
 	for (i = 0; i < ret; i++) {
 		pfd = &(state->retevents[i]);
+		DEBUG(fprintf(stderr,"SelectSetDevPollImpl.doSelect ret[%d] fd %d revents 0x%x\n", i, pfd->fd, pfd->revents));
+		retfd = pfd->fd;
 	
 		if (retfd == wfd) {
 		  DEBUG(fprintf(stderr,"NBIO DevPollImpl.doSelect: POLLIN on wakeup socket %d "
@@ -1856,8 +1859,6 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetDevPollImpl_doSelect (JNIEnv * en
 		  nbio_read_wakeup_socket(wfd);
 		  continue;		/* skip rest of this pass. */
 		}
-		DEBUG(fprintf(stderr,"SelectSetDevPollImpl.doSelect ret[%d] fd %d revents 0x%x\n", i, pfd->fd, pfd->revents));
-		retfd = pfd->fd;
 
 #ifdef USE_BTREE
 		data = btree_search(state->tree, retfd);
