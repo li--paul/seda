@@ -373,6 +373,8 @@ public class SandstormConfig implements Cloneable {
   // Return enumeration of keys matching prefix starting with cs.
   // Recursive.
   private Enumeration getKeys(configSection cs, String prefix) {
+      if(DEBUG)System.err.println("SandstormConfig.getKeys: cs = " + cs +
+				  "; prefix = " + prefix);
     // We are at the end of the prefix
     if (prefix == null) {
       Vector v = new Vector(1);
@@ -393,20 +395,21 @@ public class SandstormConfig implements Cloneable {
     }
 
     // First look for single item matching prefix
-    StringTokenizer st = new StringTokenizer(prefix, DELIM_CHAR);
-    String tok = st.nextToken();
-    if (tok == null) return null;
-    String val = cs.getVal(tok);
-    if (val != null) {
-      Vector v = new Vector(1);
-      v.addElement(tok);
-      return v.elements();
+    int dlimx = prefix.indexOf(DELIM_CHAR);
+    if (dlimx < 0) {
+	String val = cs.getVal(prefix);
+	if (val != null) {
+	    Vector v = new Vector(1);
+	    v.addElement(prefix);
+	    return v.elements();
+	}
     }
-
     // Look for subsection matching prefix
+    String tok = dlimx < 0 ? prefix : prefix.substring(0, dlimx);
     configSection subsec = cs.getSubsection(tok);
-    if (subsec == null) return null;
-    String tok2 = st.nextToken();
+    if (subsec == null)
+	return null;
+    String tok2 = dlimx < 0 ? null : prefix.substring(dlimx+1);
     return getKeys(subsec, tok2);
   }
 
