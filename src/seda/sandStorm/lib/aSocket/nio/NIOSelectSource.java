@@ -208,7 +208,10 @@ public class NIOSelectSource implements SelectSourceIF {
    * Return the number of SelectItems registered with the SelectSource.
    */
   public int numRegistered() {
-    return selector.keys().size();
+    Set keys = selector.keys();
+    synchronized (keys) {
+      return keys.size();
+    }
   }
   
   /**
@@ -217,15 +220,18 @@ public class NIOSelectSource implements SelectSourceIF {
    * interest mask.
    */
   public int numActive() {
-    synchronized(blocker) {
-      Iterator key_iter = selector.keys().iterator();
-      SelectionKey sk;
-      int n_active = 0;
-      while (key_iter.hasNext()) {
-	sk = (SelectionKey)key_iter.next();
-	if (sk.isValid() && sk.interestOps() != 0) n_active++;
+    Set keys = selector.keys();
+    synchronized (blocker) {
+      synchronized (keys) {
+  	Iterator key_iter = keys.iterator();
+   	SelectionKey sk;
+    	int n_active = 0;
+     	while (key_iter.hasNext()) {
+  	  sk = (SelectionKey)key_iter.next();
+  	  if (sk.isValid() && sk.interestOps() != 0) n_active++;
+   	}
+    	return n_active;
       }
-      return n_active;
     }
   }
 
@@ -244,7 +250,7 @@ public class NIOSelectSource implements SelectSourceIF {
    * Returns null if no entries available.
    */
   public QueueElementIF dequeue() {
-    if (selector.keys().size() == 0) return null;
+    if (numRegistered() == 0) return null;
 
     if ((ready_size == 0) || (ready_offset == ready_size)) {
       doPoll(0);
@@ -258,7 +264,7 @@ public class NIOSelectSource implements SelectSourceIF {
    * Returns null if no entries available.
    */
   public QueueElementIF[] dequeue_all() {
-    if (selector.keys().size() == 0) return null;
+    if (numRegistered() == 0) return null;
 
     if ((ready_size == 0) || (ready_offset == ready_size)) {
       doPoll(0);
@@ -277,7 +283,7 @@ public class NIOSelectSource implements SelectSourceIF {
    * SelectSource. Returns null if no entries available.
    */
   public QueueElementIF[] dequeue(int num) {
-    if (selector.keys().size() == 0) return null;
+    if (numRegistered() == 0) return null;
 
     if ((ready_size == 0) || (ready_offset == ready_size)) {
       doPoll(0);
@@ -301,7 +307,7 @@ public class NIOSelectSource implements SelectSourceIF {
 
     if (DEBUG) System.err.println("NIOSelectSource ("+name+"): blocking_dequeue called");
     synchronized (blocker) {
-      if (selector.keys().size() == 0) {
+      if (numRegistered() == 0) {
 	if (DEBUG) System.err.println("No keys in selector");
 
 	if (timeout_millis == 0) return null;
@@ -343,7 +349,7 @@ public class NIOSelectSource implements SelectSourceIF {
        don't block at all, so hopefully 1ms isn't noticable to people */
 
     synchronized (blocker) {
-      if (selector.keys().size() == 0) {
+      if (numRegistered() == 0) {
 	if (DEBUG) System.err.println("!!!!no keys");
 	if (timeout_millis == 0) return null;
 	// Wait for something to be registered
@@ -385,7 +391,7 @@ public class NIOSelectSource implements SelectSourceIF {
     if (DEBUG) System.err.println("NIOSelectSource ("+name+"): blocking_dequeue called");
 
     synchronized (blocker) {
-      if (selector.keys().size() == 0) {
+      if (numRegistered() == 0) {
       	if (timeout_millis == 0) return null;
        	// Wait for something to be registered
 	if (timeout_millis == -1) {
@@ -450,29 +456,30 @@ public class NIOSelectSource implements SelectSourceIF {
     }
 
     Set skeys = selector.selectedKeys();
-    if (skeys.size() > 0) {
 
-      SelectionKey ret[] = new SelectionKey[skeys.size()];
-      Iterator key_iter = skeys.iterator();
+    synchronized (skeys) {
+      if (skeys.size() > 0) {
 
-      int j = 0;
-      synchronized (blocker) { // MDW: Added synchronized 9-3-02
+     	SelectionKey ret[] = new SelectionKey[skeys.size()];
+      	Iterator key_iter = skeys.iterator();
+
+       	int j = 0;
 	while (key_iter.hasNext()) {
 	  ret[j] = (SelectionKey)key_iter.next();
 	  key_iter.remove();
-	  //selector.selectedKeys().remove(ret[j]);
 	  j++;
 	}
-      }
 
-      if (ret.length != 0) {
-	// XXX We can't get ret == null if doPoll() is synchronized with 
-	// deregister() - but I'm not sure I want to do that
-	ready_offset = 0; ready_size = ret.length;
-	balance(ret);
-	return;
+  	if (ret.length != 0) {
+  	  // XXX We can't get ret == null if doPoll() is synchronized with 
+  	  // deregister() - but I'm not sure I want to do that
+  	  ready_offset = 0; ready_size = ret.length;
+  	  balance(ret);
+  	  return;
+   	}
       }
     }
+
     // Didn't get anything
     ready = null; ready_offset = ready_size = 0;
   }
