@@ -96,7 +96,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
     return port;
   }
 
-  public boolean isClosed() { return closed; }
+  public boolean isClosed() { return closed || (closed = sockState.isClosed()); }
 
   /**
    * Return the ATcpServerSocket from which this connection came.
@@ -161,7 +161,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
    * Enqueue an outgoing packet to be written to this socket.
    */
   public void enqueue(QueueElementIF buf) throws SinkException {
-    if (closed) throw new SinkClosedException("ATcpConnection closed");
+    if (closed || isClosed()) throw new SinkClosedException("ATcpConnection closed");
     if (buf == null) throw new BadQueueElementException("ATcpConnection.enqueue got null element", buf);
     aSocketMgr.enqueueRequest(new ATcpWriteRequest(this, (BufferElement)buf));
   }
@@ -171,7 +171,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
    * Drops the packet if it cannot be enqueued.
    */
   public boolean enqueue_lossy(QueueElementIF buf) {
-    if (closed) return false;
+    if (closed || isClosed()) return false;
     if (buf == null) return false;
     aSocketMgr.enqueueRequest(new ATcpWriteRequest(this, (BufferElement)buf));
     return true;
@@ -181,7 +181,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
    * Enqueue a set of outgoing packets to be written to this socket.
    */
   public void enqueue_many(QueueElementIF bufarr[]) throws SinkException {
-    if (closed) throw new SinkClosedException("ATcpConnection closed");
+    if (closed || isClosed()) throw new SinkClosedException("ATcpConnection closed");
     for (int i = 0; i < bufarr.length; i++) {
       if (bufarr[i] == null) throw new BadQueueElementException("ATcpConnection.enqueue_many got null element", bufarr[i]);
       aSocketMgr.enqueueRequest(new ATcpWriteRequest(this, (BufferElement)bufarr[i]));
@@ -193,7 +193,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
    * compQ when the close is complete.
    */
   public void close(SinkIF compQ) throws SinkClosedException { 
-    if (closed) throw new SinkClosedException("ATcpConnection closed");
+    if (closed || isClosed()) throw new SinkClosedException("ATcpConnection closed");
     closed = true;
     aSocketMgr.enqueueRequest(new ATcpCloseRequest(this, compQ));
   }
@@ -203,7 +203,7 @@ public class ATcpConnection extends SimpleSink implements QueueElementIF {
    * compQ when the close is complete.
    */
   public void flush(SinkIF compQ) throws SinkClosedException { 
-    if (closed) throw new SinkClosedException("ATcpConnection closed");
+    if (closed || isClosed()) throw new SinkClosedException("ATcpConnection closed");
     aSocketMgr.enqueueRequest(new ATcpFlushRequest(this, compQ));
   } 
 
