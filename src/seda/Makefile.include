@@ -11,19 +11,9 @@
 #        build all source files under the current directory.  This 
 #        is the default
 #
-#    doc, docs, alldoc, alldocs
-#        build javadoc for the entire seda source tree.  Resulting
-#        docs will be stored in seda/javadoc
-#
-#    localdoc, localdocs
-#        build javadocs for everything under the current directory, 
-#        and store them in a newly created "javadoc" subdirectory
-#
 # NOTE: this Makefile requires GNU make, as well as a number of 
 #       standard UNIX shell tools.  This Makefile MAY work under
 #       Windows with the cygwin tools, but it has not been tested.
-#
-# Author: Rob von Behren <jrvb@cs.berkeley.edu>
 #
 ######################################################################
 
@@ -110,68 +100,10 @@ here-clean: FORCE
 
 clean: here-clean subdirs-clean $(OTHER_CLEAN)
 
-
-#############################################################
-# some general rules to make javadocs
-#############################################################
-# set up some variables
-ifeq ($(PACKAGEFILE)_x, _x) 
-PACKAGEFILE := $(shell echo /tmp/.seda_doc_packages.$$$$)
-endif
-
-localdoc: localdocs
-
-localdocs: FORCE
-	@if [ ! -d javadoc ]; then mkdir javadoc; fi
-	@ln -s $(REL_BASE)/../javadoc/images javadoc/images
-	@rm -f $(PACKAGEFILE)
-	@echo "Generating the package list"
-	@make PACKAGEFILE=$(PACKAGEFILE) $(SILENT_MAKE) finddocs 
-	@javadoc -author -version -d javadoc `cat $(PACKAGEFILE)`
-	@rm -f $(PACKAGEFILE)
-
-doc: alldocs
-
-docs: alldocs
-
-alldoc: alldocs
-
-alldocs: FORCE
-	@rm -f $(PACKAGEFILE)
-	@echo "Generating the package list"
-	@make PACKAGEFILE=$(PACKAGEFILE) $(SILENT_MAKE) -C $(ABS_BASE) finddocs
-	@javadoc -author -version -d $(ABS_BASE)/javadoc `cat $(PACKAGEFILE)`
-	@rm -f $(PACKAGEFILE)
-
-# If NODOCS is defined by a Makefile, don't generate docs for this 
-# part of the tree
-ifdef NODOCS
-finddocs: FORCE
-	@for i in $(SUBDIRS); do \
-		grep Makefile.include $$i/Makefile >/dev/null 2>&1; \
-		if [ $$? = 0 ]; then \
-			$(MAKE) PACKAGEFILE=$(PACKAGEFILE) $(SILENT_MAKE) -C $$i finddocs ; \
-		fi; \
-	done
-
-else  # NODOCS not set
-
-finddocs: FORCE
-	@if [ "x$(SRC)" != "x" ]; then \
-		echo $(PACKAGE) >> $(PACKAGEFILE); \
-	fi
-	@for i in $(SUBDIRS); do \
-		grep Makefile.include $$i/Makefile >/dev/null 2>&1; \
-		if [ $$? = 0 ]; then \
-			$(MAKE) PACKAGEFILE=$(PACKAGEFILE) $(SILENT_MAKE) -C $$i finddocs ; \
-		fi; \
-	done
-endif # Test for NODOCS
-
 # some phony targets - FORCE forces a command to be run on all dependencies,
 # and .PHONY prevents badness if a phony target coincides with a filename
 
 FORCE:
 
-.PHONY: all $(SUBDIRS) $(SUBDIRSCLEAN) clean docs
+.PHONY: all $(SUBDIRS) $(SUBDIRSCLEAN) clean
 
