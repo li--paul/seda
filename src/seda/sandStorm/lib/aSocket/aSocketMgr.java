@@ -53,7 +53,6 @@ public class aSocketMgr {
   private static SinkIF write_sink;
 
   private static ReadEventHandler read_handler;
-  private static ListenEventHandler 
 
   private static Object init_lock = new Object();
   private static boolean initialized = false;
