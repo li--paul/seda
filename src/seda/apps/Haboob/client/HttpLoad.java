@@ -224,9 +224,9 @@ public class HttpLoad {
 
     String request;
     if (FLASH_HEADERS) {
-      request = "GET /dir"+(format(dir))+"/class"+theclass+"_"+file+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\nX-Persistent: 1\r\n\r\n";
+      request = "GET "+baseURL.getPath()+"/dir"+(format(dir))+"/class"+theclass+"_"+file+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\nX-Persistent: 1\r\n\r\n";
     } else {
-      request = "GET /dir"+(format(dir))+"/class"+theclass+"_"+file+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\n\r\n";
+      request = "GET "+baseURL.getPath()+"/dir"+(format(dir))+"/class"+theclass+"_"+file+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\n\r\n";
     }
     return request;
   }
