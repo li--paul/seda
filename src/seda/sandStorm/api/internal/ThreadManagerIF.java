@@ -49,5 +49,10 @@ public interface ThreadManagerIF {
    */
   public void deregisterAll();
 
+  /**
+   * Wake any thread waiting for work.  This is called by
+   * an enqueue* method of FiniteQueue.
+   **/
+  public void wake();
 }
 
