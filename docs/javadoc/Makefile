@@ -10,6 +10,7 @@ PACKAGES = seda.sandStorm.api \
            seda.sandStorm.lib.aDisk \
            seda.sandStorm.lib.http \
            seda.sandStorm.lib.Gnutella \
+           seda.sandStorm.lib.util \
            seda.nbio \
            seda.util 
 
