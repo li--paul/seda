@@ -82,8 +82,8 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     }
 
     if (dtm.equals(SandstormConfig.THREADMGR_TPPTM)) {
-      throw new Error("TPPThreadManager is no longer supported.");
-      /* defaulttm = new TPPThreadManager(mgrconfig); */
+      //throw new Error("TPPThreadManager is no longer supported.");
+      defaulttm = new TPPThreadManager(mgrconfig);
     } else if (dtm.equals(SandstormConfig.THREADMGR_TPSTM)) {
       defaulttm = new TPSThreadManager(this);
     } else if (dtm.equals(SandstormConfig.THREADMGR_AggTPSTM)) {
