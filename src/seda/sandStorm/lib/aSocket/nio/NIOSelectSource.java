@@ -171,6 +171,7 @@ public class NIOSelectSource implements SelectSourceIF {
       /* This must be done so that calls to close() actually close. */
       try {
         if (DEBUG) System.err.println("NIOSelectSource ("+name+"): selectNow");
+	selector.wakeup(); 
 	selector.selectNow();
         if (DEBUG) System.err.println("NIOSelectSource ("+name+"): selectNow returned");
       } catch (IOException ioe) {
@@ -455,11 +456,13 @@ public class NIOSelectSource implements SelectSourceIF {
       Iterator key_iter = skeys.iterator();
 
       int j = 0;
-      while (key_iter.hasNext()) {
-	ret[j] = (SelectionKey)key_iter.next();
-	key_iter.remove();
-	//selector.selectedKeys().remove(ret[j]);
-	j++;
+      synchronized (blocker) { // MDW: Added synchronized 9-3-02
+	while (key_iter.hasNext()) {
+	  ret[j] = (SelectionKey)key_iter.next();
+	  key_iter.remove();
+	  //selector.selectedKeys().remove(ret[j]);
+	  j++;
+	}
       }
 
       if (ret.length != 0) {
