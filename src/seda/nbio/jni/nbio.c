@@ -400,9 +400,9 @@ void nbio_read_wakeup_socket(int fd) {
 
 #define MAX_POLLOBJS 100
 static struct {
-    jobject pollobj;
+    jint pollobj;
     int wakeup_sockets[2];
- } pollobjs[MAX_POLLOBJS] = { { NULL, {-1, -1} } };
+ } pollobjs[MAX_POLLOBJS] = { { -1, {-1, -1} } };
 
  static int bum_wakeup_sockets[2] = {-1}; 
 
@@ -1938,19 +1938,20 @@ JNIEXPORT void JNICALL Java_seda_nbio_SelectSetDevPollImpl_interruptSelect(JNIEn
 /* SelectSetPollImpl *******************************************************/
 
 
-int* nbio_pollImpl_init_wakeup(JNIEnv *env, jobject this) {
+int* nbio_pollImpl_init_wakeup(JNIEnv *env, jint my_id) {
      int i;
      for (i = 0; i < n_pollobjs; i++) {	/* presuming linear search not awful */
-	 if (pollobjs[i].pollobj == this)
+	 if (pollobjs[i].pollobj == my_id)
 	     return pollobjs[i].wakeup_sockets;
      }
+
      if (n_pollobjs >= MAX_POLLOBJS) {
 	 THROW_EXCEPTION(env, "java/lang/OutOfMemoryError",
 			 "No more room for another SelectSet in nbio pollobjs.");
 	 return bum_wakeup_sockets;
      }
      //  This section should be synchronized / mutex'd...
-     pollobjs[n_pollobjs].pollobj = this;
+     pollobjs[n_pollobjs].pollobj = my_id;
      if (socketpair(AF_UNIX, SOCK_STREAM, 0,
 		    pollobjs[n_pollobjs].wakeup_sockets) != 0) {
 	 char errmsg[160];
@@ -1962,7 +1963,7 @@ int* nbio_pollImpl_init_wakeup(JNIEnv *env, jobject this) {
      return pollobjs[n_pollobjs++].wakeup_sockets;
 }
 
-JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jobject this, jint timeout) {
+JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jobject this, jint timeout, jint my_id) {
 	jobjectArray itemarr;
 	jobject selitemobj, fdobj;
 	struct pollfd *ufds;
@@ -1982,8 +1983,7 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
 			return -1;
 		}
 	}
-
-	wfd = nbio_pollImpl_init_wakeup(env, this);
+	wfd = nbio_pollImpl_init_wakeup(env, my_id);
 
 	itemarr = (jobjectArray)(*env)->GetObjectField(env, this, FID_seda_nbio_SelectSetPollImpl_itemarr);
 	if (itemarr == NULL) {
@@ -2147,8 +2147,8 @@ JNIEXPORT jint JNICALL Java_seda_nbio_SelectSetPollImpl_doSelect(JNIEnv *env, jo
  	return ret;
 }
 
-JNIEXPORT void JNICALL Java_seda_nbio_SelectSetPollImpl_interruptSelect(JNIEnv *env, jobject this) {
-    int *wfd = nbio_pollImpl_init_wakeup(env, this);
+JNIEXPORT void JNICALL Java_seda_nbio_SelectSetPollImpl_interruptSelect(JNIEnv *env, jobject this, jint my_id) {
+    int *wfd = nbio_pollImpl_init_wakeup(env, my_id);
     nbio_interrupt_select(env, wfd[0]);
 }
 

@@ -40,9 +40,12 @@ class SelectSetPollImpl extends SelectSetImpl {
   private SelectItem itemarr[];
   private boolean needUpdate = false;
   private int cachedActiveCount = -1;
+  private static int counter = 0;
+  private static Object lock = new Object();
+  private int my_id;
 
-  private native int doSelect(int timeout);
-  public native void interruptSelect();
+  private native int doSelect(int timeout, int my_id);
+  private native void interruptSelect(int my_id);
 
   // Push the internal vector to itemarr.
   private void itemarrupdate() {
@@ -52,6 +55,10 @@ class SelectSetPollImpl extends SelectSetImpl {
       itemarr = new SelectItem[vec.size()];
       vec.copyInto(itemarr);
     }
+  }
+
+  public void interruptSelect() {
+    interruptSelect(my_id);
   }
 
   /**
@@ -65,6 +72,10 @@ class SelectSetPollImpl extends SelectSetImpl {
    * Create a SelectSetPollImpl with no SelectItems.
    */
   SelectSetPollImpl() {
+    synchronized(lock) {
+	my_id = counter;
+	counter++;
+    }
     vec = new Vector(1);
   }
 
@@ -200,7 +211,7 @@ class SelectSetPollImpl extends SelectSetImpl {
 	needUpdate = false;
       }
     }
-    return doSelect(timeout);
+    return doSelect(timeout, my_id);
   }
 
   /**
