@@ -166,10 +166,13 @@ public class NIOSelectSource implements SelectSourceIF {
 
     synchronized (blocker) {
       SelectionKey selkey = (SelectionKey)selkey_obj;
+      if (DEBUG) System.err.println("NIOSelectSource ("+name+"): cancel "+selkey);
       selkey.cancel();
       /* This must be done so that calls to close() actually close. */
       try {
+        if (DEBUG) System.err.println("NIOSelectSource ("+name+"): selectNow");
 	selector.selectNow();
+        if (DEBUG) System.err.println("NIOSelectSource ("+name+"): selectNow returned");
       } catch (IOException ioe) {
 	// Ignore
       }
@@ -438,9 +441,12 @@ public class NIOSelectSource implements SelectSourceIF {
     } catch (IOException e) {
       // Essentially ignore the exception (since NBIO SelectSet.select()
       // doesn't throw any exceptions)
-      if (DEBUG) System.err.println("NIOSelectSource: Error doing select: " + e);
+      if (DEBUG) System.err.println("NIOSelectSource ("+name+"): Error doing select: " + e);
     }
     if (DEBUG) System.err.println("NIOSelectSource ("+name+"): poll returned "+c);
+    if (c == 0) {
+      ready = null; ready_offset = ready_size = 0; return;
+    }
 
     Set skeys = selector.selectedKeys();
     if (skeys.size() > 0) {
@@ -498,7 +504,7 @@ public class NIOSelectSource implements SelectSourceIF {
 	    throw new IllegalArgumentException("balance: All items in selarr are null! This is a bug - please contact mdw@cs.berkeley.edu");
 	  }
 	}
-	if (DEBUG) System.err.println("NIOSelectSource: balance: "+n+"->"+i);
+	if (DEBUG) System.err.println("NIOSelectSource ("+name+"): balance: "+n+"->"+i);
 	a = selarr[n]; selarr[n] = null; ready[i] = a;
       }
     }

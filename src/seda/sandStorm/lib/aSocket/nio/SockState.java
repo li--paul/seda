@@ -265,7 +265,7 @@ public class SockState extends seda.sandStorm.lib.aSocket.SockState {
     wselkey.interestOps(wselkey.interestOps() & ~SelectionKey.OP_WRITE);
   }
 
-  // XXX This is synchronized to avoid close() interfering with
+  // This is synchronized to avoid close() interfering with
   // addWriteRequest
   protected synchronized void close(SinkIF closeEventQueue) {
     if (closed) return;
@@ -276,16 +276,14 @@ public class SockState extends seda.sandStorm.lib.aSocket.SockState {
     if (read_selsource != null) read_selsource.deregister(rselkey);
     if (write_selsource != null) write_selsource.deregister(rselkey);
     if (DEBUG) System.err.println("SockState.close(): done deregistering with selsources");
-    // Eliminate write queue
 
-    // XXX XXX XXX MDW: This introduces a race condition with 
-    // addWriteRequest() -- need to serialize close() with other
-    // queue operations on the socket.
+    // Eliminate write queue
     writeReqList = null;
 
     try {
       if (DEBUG) System.err.println("SockState.close(): doing close ["+nbsock+"]");
       nbsock.close();
+      if (DEBUG) System.err.println("SockState.close(): done with close ["+nbsock+"]");
     } catch (IOException e) {
       // Do nothing
     }
@@ -294,6 +292,7 @@ public class SockState extends seda.sandStorm.lib.aSocket.SockState {
       SinkClosedEvent sce = new SinkClosedEvent(conn);
       closeEventQueue.enqueue_lossy(sce);
     }
+    if (DEBUG) System.err.println("SockState.close(): returning");
   }
 
 }
