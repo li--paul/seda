@@ -81,8 +81,10 @@ class SignalMgr implements SignalMgrIF {
     } else {
       for (int i = 0; i < vec.size(); i++) {
 	SinkIF s = (SinkIF)vec.elementAt(i);
-	if (s.equals(sink)) vec.removeElementAt(i);
-	return;
+	if (s.equals(sink)) {
+	  vec.removeElementAt(i);
+	  return;
+	}
       }
       throw new IllegalArgumentException("Sink "+sink+" not registered for signal type "+type);
     }

@@ -93,6 +93,7 @@ public class aSocketInputStream extends MultiByteArrayInputStream {
       // No sequence number -- assume it's in order, but don't increment
       // the nextSeqNum
       addArray(pkt.getBytes());
+      return;
     } else if (sn == nextSeqNum) {
       addArray(pkt.getBytes());
       nextSeqNum++;

@@ -91,11 +91,13 @@ public class HttpLoadThreaded extends Thread {
   // Order of file popularity within each class
   private static final int FILE_ORDER[] = { 4, 3, 5, 2, 6, 1, 7, 8, 0 };
 
+  // If non-null, always request this URL (unless BOTTLENECK_FREQ is nonzero).
+  private static final String STATIC_URL = "/dir00000/class1_7";
+
   // URL to trigger server bottleneck
-  //private static final String BOTTLENECK_URL = "/bottleneck";
-  private static final String BOTTLENECK_URL = "/dir00000/class1_7";
+  private static final String BOTTLENECK_URL = "/bottleneck";
   // Frequency of bottleneck access
-  private static final double BOTTLENECK_FREQ = 1.0;
+  private static final double BOTTLENECK_FREQ = 0.10;
 
   // If true, generate special 'X-Persistent' header for Flash web server
   private static final boolean FLASH_HEADERS = false;
@@ -206,6 +208,14 @@ public class HttpLoadThreaded extends Thread {
 	return "GET "+BOTTLENECK_URL+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\nX-Persistent: 1\r\n\r\n";
       } else {
 	return "GET "+BOTTLENECK_URL+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\n\r\n";
+      }
+    }
+
+    if (STATIC_URL != null) {
+      if (FLASH_HEADERS) {
+	return "GET "+STATIC_URL+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\nX-Persistent: 1\r\n\r\n";
+      } else {
+	return "GET "+STATIC_URL+" HTTP/1.1\r\nHost: "+baseURL.getHost()+"\r\n\r\n";
       }
     }
 
