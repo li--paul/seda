@@ -42,14 +42,14 @@ import java.net.*;
 public class MultiByteArrayInputStream extends NonblockingInputStream {
 
   private static final boolean DEBUG = false;
-  private static final int NUMARRAYS = 2;
+  protected static final int NUMARRAYS = 2;
 
-  private boolean closed;
-  private int cur_offset;
-  private int cur_array;
-  private byte[] arrays[];
-  private int push_array;
-  private int mark_array, mark_offset;
+  protected boolean closed;
+  protected int cur_offset;
+  protected int cur_array;
+  protected byte[] arrays[];
+  protected int push_array;
+  protected int mark_array, mark_offset;
 
   /**
    * Create a MultiByteArrayInputStream with the given array of
@@ -86,7 +86,7 @@ public class MultiByteArrayInputStream extends NonblockingInputStream {
   }
 
   // Expand arrays if too long
-  private void expandArrays() {
+  protected void expandArrays() {
     byte[] oldarr[] = arrays;
     arrays = new byte[oldarr.length + NUMARRAYS][];
     System.arraycopy(oldarr, 0, arrays, 0, oldarr.length);
