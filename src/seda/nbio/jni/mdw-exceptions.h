@@ -25,11 +25,22 @@
 static jclass _mdw_exceptions_exc_class;
 static char * _mdw_exceptions_msg;
 
+#ifdef _WIN32
+
+	#define THROW_WIN_EXCEPTION(ENV, EXCEPTION_TYPE, MESSAGE) { \
+    char __err_msg[256]; \
+    int __err_type = MESSAGE; /* Force evaluation */ \
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, __err_type, 0, __err_msg, 256, NULL); \
+	THROW_EXCEPTION(ENV, EXCEPTION_TYPE, __err_msg); \
+}
+
+#endif
+
 #define THROW_EXCEPTION(ENV, EXCEPTION_TYPE, MESSAGE) \
   _mdw_exceptions_msg = MESSAGE; /* Force evaluation */ \
   _mdw_exceptions_exc_class = (*ENV)->FindClass(ENV, EXCEPTION_TYPE); \
   if (_mdw_exceptions_exc_class != NULL) (*ENV)->ThrowNew(ENV, _mdw_exceptions_exc_class, MESSAGE);
-    
+
 #define EXC_IF_NOTOK_VOIDRET(EXPR, ENV, EXCEPTION_TYPE, MESSAGE) { \
   if (!(EXPR)) { THROW_EXCEPTION(ENV, EXCEPTION_TYPE, MESSAGE); return; } \
 } 
@@ -37,10 +48,9 @@ static char * _mdw_exceptions_msg;
 #define EXC_IF_NOTOK(EXPR, ENV, EXCEPTION_TYPE, MESSAGE, RETVAL) { \
   if (!(EXPR)) { THROW_EXCEPTION(ENV, EXCEPTION_TYPE, MESSAGE); return RETVAL; } \
 }
-  
 
 
-  
-    
-  
-  
+
+
+
+
