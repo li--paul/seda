@@ -26,8 +26,12 @@ package seda.sandStorm.internal;
 
 import seda.sandStorm.api.*;
 import seda.sandStorm.api.internal.*;
-import seda.sandStorm.main.*;
-import java.util.*;
+import seda.sandStorm.main.SandstormConfig;
+
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * TPPThreadManager is a thread manager implementation which provides
@@ -45,7 +49,20 @@ class TPPThreadManager implements ThreadManagerIF {
   private Vector stages;
   private Vector threads;
   private ThreadGroup tg;
+  private boolean crashOnException;
 
+  /**
+   * An <code>Iterator</code> interface to the list of stages.
+   * The {@link #schedule_queue} method uses this variable to implement
+   * scheduling policies that are more interesting than round-robin.
+   */
+  private Iterator run_queue;
+  /**
+   * All accesses to <code>run_queue</code> must be guarded by this lock,
+   * because the former variable may be overwritten.
+   */
+  private Object run_queue_lock = new Object();
+    
   /**
    * Create an TPPThreadManager which attempts to schedule stages on
    * num_cpus CPUs, and caps its thread usage to max_threads.
@@ -53,6 +70,8 @@ class TPPThreadManager implements ThreadManagerIF {
   TPPThreadManager(SandstormConfig config) {
     this.num_cpus = config.getInt("global.TPPTM.numCpus");
     this.max_threads = config.getInt("global.TPPTM.maxThreads");
+    this.crashOnException = config.getBoolean("global.crashOnException");    
+
     stages = new Vector(1);
     threads = new Vector(num_cpus);
 
@@ -91,7 +110,27 @@ class TPPThreadManager implements ThreadManagerIF {
       StageWrapperIF stage = (StageWrapperIF)e.nextElement();
       deregister(stage);
     }
-    tg.interrupt();
+    tg.stop();
+  }
+
+  /**
+   * Orders the stages and assigns <code>this.run_queue</code>
+   * Currently implements round-robin with the stages ordered by the size
+   * of their event queue.
+   */
+  protected void schedule_queue() {
+      synchronized( run_queue_lock ) {
+	  TreeMap sorted_queue = new TreeMap();
+
+	  for (int i = 0; i < stages.size(); i++) {
+	      StageWrapperIF s = (StageWrapperIF)stages.elementAt(i);
+	      SourceIF src = s.getSource();
+	      int size = src.size();
+	      // Invert ordering so iterator produces decreasing order.
+	      sorted_queue.put( new Integer( -1*size ), s );
+	  }
+	  this.run_queue = sorted_queue.values().iterator();
+      }
   }
 
   /**
@@ -105,13 +144,10 @@ class TPPThreadManager implements ThreadManagerIF {
       this.name = name;
     }
 
-    // Simple round-robin scheduling for now
     public void run() {
       System.err.println(name+": starting");
 
       while (true) {
-
-       	try {
 
 	  // Wait until we have some stages 
 	  if (stages.size() == 0) {
@@ -122,25 +158,46 @@ class TPPThreadManager implements ThreadManagerIF {
 		// Ignore
 	      }
 	    }
+	    continue;
 	  }
 
-	  for (int i = 0; i < stages.size(); i++) {
-	    StageWrapperIF s = (StageWrapperIF)stages.elementAt(i);
+	  // Now grab the next stage to run
+	  StageWrapperIF s;
+	  synchronized( run_queue_lock ) {
+	      if( (run_queue == null) || (!run_queue.hasNext()) ) {
+		  schedule_queue();
+	      }
+	      s = (StageWrapperIF)run_queue.next();
+	  }
+
+	try {
 	    if (DEBUG_VERBOSE) System.err.println(name+": inspecting "+s);
+
 	    SourceIF src = s.getSource();
 	    QueueElementIF qelarr[] = src.dequeue_all();
 	    if (qelarr != null) {
 	      if (DEBUG) System.err.println(name+": dequeued "+qelarr.length+" elements for "+s);
-	      s.getEventHandler().handleEvents(qelarr);
+	      EventHandlerIF handler = s.getEventHandler();
+	      if( handler instanceof SingleThreadedEventHandlerIF ) {
+		synchronized( s ) {
+		  handler.handleEvents(qelarr);
+		}
+	      } else {
+		handler.handleEvents(qelarr);		    
+	      }
 	      if (DEBUG) System.err.println(name+": returned from handleEvents for "+s);
 	    } else {
 	      if (DEBUG_VERBOSE) System.err.println(name+": got null on dequeue");
 	    }
-	  }
 
 	} catch (Exception e) {
 	  System.err.println("TPPThreadManager: appThread ["+name+"] got exception "+e);
 	  e.printStackTrace();
+	  if (crashOnException) {
+	    System.err.println("Sandstorm: Crashing runtime due to exception - goodbye");
+	    System.exit(-1);
+	  }
+	  
 	}
       }
     }
