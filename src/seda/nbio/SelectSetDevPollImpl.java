@@ -166,7 +166,8 @@ class SelectSetDevPollImpl extends SelectSetImpl {
   synchronized void update() {
     for (int i = 0; i < vec.size(); i++) {
       SelectItem sel = (SelectItem)vec.elementAt(i);
-      register(sel);
+      if (sel.events == 0) deregister(sel);
+      else register(sel);
     }
     cachedActiveCount = -1;
   }
@@ -176,7 +177,8 @@ class SelectSetDevPollImpl extends SelectSetImpl {
    * native code.
    */
   synchronized void update(SelectItem sel) {
-    register(sel);
+    if (sel.events == 0) deregister(sel);
+    else register(sel);
     cachedActiveCount = -1;
   }
 
