@@ -183,7 +183,13 @@ public class SockState extends seda.sandStorm.lib.aSocket.SockState {
 
     if (this.write_selsource == null) {
         if (DEBUG) System.err.println("SockState: Setting selsource to " + write_selsource);
-        if (DEBUG) System.err.println("w/r=" + ((NIOSelectSource)write_selsource).getSelector() + "/" + ((NIOSelectSource)read_selsource).getSelector());
+        if (DEBUG) {
+	  if (read_selsource == null) {
+	    System.err.println("w/r=" + ((NIOSelectSource)write_selsource).getSelector() + "/null");
+	  } else {
+	    System.err.println("w/r=" + ((NIOSelectSource)write_selsource).getSelector() + "/" + ((NIOSelectSource)read_selsource).getSelector());
+	  }
+	}
         if (DEBUG) System.err.println("n_keys = " + ((NIOSelectSource)write_selsource).getSelector().keys().size());
         this.write_selsource = (NIOSelectSource)write_selsource;
 	this.write_selsource.setName("WriteSelectSource");
