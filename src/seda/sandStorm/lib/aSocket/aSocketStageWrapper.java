@@ -60,9 +60,9 @@ class aSocketStageWrapper implements StageWrapperIF {
       queuelen = -1;
     }
     if (queuelen == -1) {
-      eventQ = new FiniteQueue();
+      eventQ = new FiniteQueue(tm);
     } else {
-      eventQ = new FiniteQueue();
+      eventQ = new FiniteQueue(tm);
       QueueThresholdPredicate pred = new QueueThresholdPredicate(eventQ, queuelen);
       eventQ.setEnqueuePredicate(pred);
     }
