@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+
+<project name="SandStorm" default="compile-seda" basedir=".">
+
+	<property name="lib.dir"	value="lib" />
+	<property name="src.dir"	value="src" />
+
+	<property name="build.dir"	value="work" />
+
+        <property name="doc.dir"        value="docs/javadoc" />
+
+        <property name="seda.jar"       value="${lib.dir}/seda.jar" />
+
+        <property name="seda-nbio"       value="seda/sandStorm/lib/aSocket/* seda/sandStorm/lib/aSocket/nbio/* " />
+	<property name="seda-libs"       value="seda/sandStorm/lib/aDisk/* seda/sandStorm/lib/http/* seda/sandStorm/lib/aTLS/** seda/sandStorm/lib/Gnutella/* " />
+
+	<property name="seda-src"        value="seda/nbio/* seda/util/* ${seda-nbio} ${seda-libs}" />
+	<property name="seda-src-exclude"   value="**/test/*" />
+
+        <property name="cryptix.jar"    value="${lib.dir}/cryptix.jar" />
+        <property name="puretls.jar"    value="${lib.dir}/puretls-atls.jar" />
+
+
+
+        <property name="sandstorm" value="seda/sandStorm/api/* seda/sandStorm/api/internal/* seda/sandStorm/core/* seda/sandStorm/internal/* seda/sandStorm/*" />
+
+
+	<target name="clean">
+		<delete dir="${build.dir}/classes" />
+	</target>
+
+
+	<target name="prepare" depends="clean">
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${lib.dir}" />
+	</target>
+
+        <target name="prepare-tls" depends="prepare">
+                <copy file="${src.dir}/seda/sandStorm/lib/aTLS/cryptix.jar" tofile="${cryptix.jar}" />
+                <copy file="${src.dir}/seda/sandStorm/lib/aTLS/puretls-atls.jar" tofile="${puretls.jar}" />
+        </target>
+
+
+	<target name="compile-seda" depends="prepare-tls" >
+		<delete file="${seda.jar}" />
+
+                <condition property="seda-nbio" value="seda/sandStorm/lib/aSocket/nbio/* seda/sandStorm/lib/aSocket/*" >
+                        <available classname="java.nio.channels.Selector" />
+                </condition>
+
+                <echo>
+                        Compile SEDA
+                        Source: ${seda-src}
+                        Exclude ${seda-src-exclude}
+                </echo>
+
+		<javac
+			srcdir="${src.dir}"
+			includes="${seda-src}"
+			excludes="${seda-src-exclude}"
+			destdir="${build.dir}/classes"
+			nowarn="on"
+		>
+			<classpath>
+				<pathelement location="${cryptix.jar}"/>
+				<pathelement location="${puretls.jar}"/>
+				<pathelement path="${java.class.path}"/>
+			</classpath>
+		</javac>
+
+
+		<jar jarfile="${seda.jar}"
+			basedir="${build.dir}/classes"
+
+			/>
+	</target>
+
+
+        <target name="javadocs" depends="prepare" >
+                <javadoc destdir="${doc.dir}"
+                        windowtitle="SEDA Javadoc Documentation"
+                        package="true"
+                        author="true"
+                        sourcepath="${src.dir}"
+                        packagenames="seda.sandStorm.api,seda.sandStorm.api.internal,seda.sandStorm.core,seda.sandStorm.main,seda.sandStorm.internal,seda.sandStorm.lib.aSocket,seda.sandStorm.lib.aDisk,seda.sandStorm.lib.http,seda.sandStorm.lib.Gnutella,seda.nbio,seda.util" >
+
+                        <header><![CDATA[
+                                <b>More information:</b> <a href="http://www.cs.berkeley.edu/~mdw/proj/seda/">http://www.cs.berkeley.edu/~mdw/proj/seda/</a>
+                                ]]>
+                        </header>
+
+                </javadoc>
+
+        </target>
+
+</project>
