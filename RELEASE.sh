@@ -17,6 +17,9 @@ export CVS_RSH=ssh
 cvs -z3 -d:ext:mdwelsh@cvs.seda.sourceforge.net:/cvsroot/seda -Q co seda
 find . -name CVS | xargs rm -r
 
+# Remove files that should not be in the release
+rm -rf seda/src/seda/apps
+
 echo "Performing test build..."
 cd seda/src/seda
 make clean
