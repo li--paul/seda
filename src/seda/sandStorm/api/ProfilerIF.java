@@ -27,12 +27,17 @@ package seda.sandStorm.api;
 import seda.sandStorm.internal.StageGraph;
 
 /**
- * A ProfilerIF is responsible for profiling the behavior of the system
- * over time. If the system is being run in profiling mode, applications
- * can get a handle to the ProfilerIF by invoking ManagerIF.getProfiler().
+ * A ProfilerIF is responsible for profiling the behavior of the
+ * system over time. A snapshot of the size of all registered
+ * ProfilableIF objects is taken and forwarded to registered
+ * ProfilerHandlerIF objects, which can export the snapshot
+ * to a variety of destinations, including files, GUI, etc.
+ *
+ * Applications can get a handle to the ProfilerIF by invoking
+ * ManagerIF.getProfiler().
  *
  * @see ManagerIF
- * @author Matt Welsh
+ * @author Matt Welsh and Jean Morissette
  */
 public interface ProfilerIF {
 
@@ -55,5 +60,9 @@ public interface ProfilerIF {
    * Return a handle to the graph profiler. 
    */
   public StageGraph getGraphProfiler();
+
+  public void addHandler(ProfilerHandlerIF handler);
+
+  public void removeHandler(ProfilerHandlerIF handler);
 
 }
