@@ -52,7 +52,7 @@ public abstract class AFileRequest implements QueueElementIF {
     this.compQ = compQ;
   }
 
-  AFile getFile() {
+  public AFile getFile() {
     return afile;
   }
 
