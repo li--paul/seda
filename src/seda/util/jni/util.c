@@ -60,8 +60,14 @@ JNIEXPORT jlong JNICALL Java_seda_util_MDWUtil_currentTimeUsec(JNIEnv *env, jcla
 
   struct timeval tv;
   gettimeofday(&tv, NULL);
-  return (jlong)((tv.tv_sec * 1000000) + tv.tv_usec);
-
+  DEBUG(fprintf(stderr, "seconds: %ld\n", tv.tv_sec));  
+  DEBUG(fprintf(stderr, "microseconds: %ld\n", tv.tv_usec));  
+  DEBUG(fprintf(stderr, "old math: %lld\n",
+		(jlong)((tv.tv_sec * 1000000) + tv.tv_usec)));
+  DEBUG(fprintf(stderr, "new math: %lld\n",
+		(jlong)((tv.tv_sec * (jlong)1000000) + tv.tv_usec)));
+  
+  return (jlong)((tv.tv_sec * (jlong)1000000) + tv.tv_usec);
 }
 
 
