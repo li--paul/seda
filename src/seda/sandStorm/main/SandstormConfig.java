@@ -153,6 +153,16 @@ public class SandstormConfig implements Cloneable,SandstormConfigIF {
 
   /**
    * Create a new SandstormConfig, reading the configration from the
+   * given reader. The configuration file uses an XML-like structure;
+   * see the Sandstorm documentation for more information on its format.
+   */
+  public SandstormConfig(Reader in) throws IOException {
+    this();
+    readFile(in);
+  }
+
+  /**
+   * Create a new SandstormConfig, reading the configration from the
    * given file. The configuration file uses an XML-like structure;
    * see the Sandstorm documentation for more information on its format.
    */
@@ -475,8 +485,15 @@ public class SandstormConfig implements Cloneable,SandstormConfigIF {
    * Read the configuration from the given file.
    */
   public void readFile(String fname) throws IOException {
-
     Reader in = new directiveReader(new BufferedReader(new FileReader(fname)));
+    readFile (in);
+  }
+
+  /**
+   * Read the configuration from the given reader.
+   */
+  public void readFile(Reader in) throws IOException {
+
     root = new configSection(in);
 
     configSection global_initargs = null;
