@@ -274,7 +274,7 @@ public class SockState extends seda.sandStorm.lib.aSocket.SockState {
 
     if (DEBUG) System.err.println("SockState.close(): Deregistering with selsources");
     if (read_selsource != null) read_selsource.deregister(rselkey);
-    if (write_selsource != null) write_selsource.deregister(rselkey);
+    if (write_selsource != null) write_selsource.deregister(wselkey);
     if (DEBUG) System.err.println("SockState.close(): done deregistering with selsources");
 
     // Eliminate write queue
