@@ -116,6 +116,7 @@ public class SelectSource implements SelectSourceIF {
         );
         return;
     }
+    selset.interruptSelect(); // blow it out of any select, unlock blocker.
     SelectItem sel = (SelectItem)selobj;
     selset.add(sel);
     synchronized (blocker) {
@@ -146,6 +147,7 @@ public class SelectSource implements SelectSourceIF {
         );
         return;
     }
+    selset.interruptSelect();	// blow it out of any selects, unlock blocker
     SelectItem sel = (SelectItem)selobj;
     selset.remove(sel);
     synchronized (blocker) {
@@ -170,7 +172,7 @@ public class SelectSource implements SelectSourceIF {
   public void update(Object selobj) {
     if (! (selobj instanceof SelectItem)) {
         System.err.println(
-            "deregister() called with non SelectItem argument.  " +
+            "update() called with non SelectItem argument.  " +
             "Should not happen!!"
         );
         return;
@@ -431,6 +433,11 @@ public class SelectSource implements SelectSourceIF {
     }
     balancer_seq_off = 0;
   }
+
+    public void interruptSelect() {
+	if(DEBUG)System.err.println("SelectSource.interruptSelect() called.");
+	selset.interruptSelect();
+    }
 
 }
 

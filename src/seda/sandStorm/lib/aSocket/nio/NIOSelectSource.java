@@ -538,5 +538,11 @@ public class NIOSelectSource implements SelectSourceIF {
     return "NIOSS("+name+")";
   }
 
+  // The following is called to knock the polling thread out of a poll
+  // when e.g. a StartListeningRequest is in the ReadEventHandler queue.
+  public void interruptSelect() { 
+    selector.wakeup();
+  }
+
 }
 
