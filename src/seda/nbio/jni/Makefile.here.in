@@ -34,8 +34,12 @@ libNBIO.so: $(COBJS)
 	@$(CC) -shared $(CFLAGS) $(COBJS) -o libNBIO.so $(CLIBS)
 
 $(SHAREDLINK): libNBIO.so
-	echo "ln -sf `pwd`/libNBIO.so $@"
-	@ln -sf `pwd`/libNBIO.so $@
+	echo "rm -f $@"
+	@rm -f $@
+	echo "cp `pwd`/libNBIO.so $@"
+	@cp `pwd`/libNBIO.so $@
+	#echo "ln -sf `pwd`/libNBIO.so $@"
+	#@ln -sf `pwd`/libNBIO.so $@
 
 clean:
 	@rm -f $(COBJS) libNBIO.so

@@ -32,8 +32,12 @@ libMDWUtil.so: $(COBJS)
 	@$(CC) -shared $(CFLAGS) $(COBJS) -o libMDWUtil.so $(CLIBS)
 
 $(SHAREDLINK): libMDWUtil.so
-	echo "ln -sf `pwd`/libMDWUtil.so $@"
-	@ln -sf `pwd`/libMDWUtil.so $@
+	echo "rm -f $@"
+	@rm -f $@
+	echo "cp `pwd`/libMDWUtil.so $@"
+	@cp `pwd`/libMDWUtil.so $@
+	#echo "ln -sf `pwd`/libMDWUtil.so $@"
+	#@ln -sf `pwd`/libMDWUtil.so $@
 
 clean:
 	@rm -f $(COBJS) libMDWUtil.so
