@@ -152,7 +152,9 @@ class StageWrapper implements StageWrapperIF {
    */
   public void destroy() throws Exception {
     threadmgr.deregister(this);
+    eventQ.close();
     handler.destroy();
+    stage.destroy();
   }
 
   /**

@@ -99,7 +99,7 @@ public class Stage implements StageIF {
    * Destroy this stage.
    */
   public void destroy() {
-    throw new IllegalArgumentException("XXX Not yet implemented!");
+      // nothing to do really, StageWrapper takes care of everything
   }
 
 }

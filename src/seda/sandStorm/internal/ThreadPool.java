@@ -167,7 +167,11 @@ public class ThreadPool implements ProfilableIF {
    * Stop the thread pool.
    */
   public void stop() {
-    pooltg.stop();
+      //          pooltg.stop();
+      for (int i = 0; i < threads.size(); i++) {
+	  Thread t = (Thread)threads.elementAt(i);
+	  t.stop();
+      }
   }
 
   /**

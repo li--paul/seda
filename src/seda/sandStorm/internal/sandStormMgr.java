@@ -308,6 +308,23 @@ public class sandStormMgr implements ManagerIF, SystemManagerIF, sandStormConst 
     signalMgr.trigger(new StagesInitializedSignal());
   }
 
+  public void destroyStage(String stagename) throws Exception {
+
+    if (stagename == null) throw new NoSuchStageException("no such stage: null");
+    StageWrapperIF wrapper = (StageWrapperIF)stagetbl.get(stagename);
+    if (wrapper == null) throw new NoSuchStageException("no such stage: "+stagename);
+
+    // remove from all data structures
+    stagetbl.remove(stagename);
+
+    // the profiler does not contain a reference to the stage itself, just to
+    // the stage's sink, and it doesn't support removal anyway, so leave it
+    // alone for now
+
+    // have the wrapper destroy what's left
+    wrapper.destroy();
+  }
+
   // Destroy all stages
   private void destroyStages() {
     Enumeration e = stagetbl.elements();

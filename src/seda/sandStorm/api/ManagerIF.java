@@ -92,4 +92,12 @@ public interface ManagerIF {
    */
   public SandstormConfigIF getConfig();
 
+  /**
+   * Destroy the given stage, and remove all references to it that are
+   * being maintained by SandStorm
+   *
+   * @exception Exception if anything goes wrong during the destruction
+   */
+  public void destroyStage(String stagename) throws Exception;
+
 }

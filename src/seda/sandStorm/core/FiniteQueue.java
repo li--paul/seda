@@ -46,6 +46,7 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
   private Hashtable provisionalTbl;
   private EnqueuePredicateIF pred;
   private String name;
+  private boolean closed;
 
   /** 
    * Create a FiniteQueue with the given enqueue predicate.
@@ -86,9 +87,15 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
     }
   }
 
-  public void enqueue(QueueElementIF enqueueMe) throws SinkFullException {
+  public void enqueue(QueueElementIF enqueueMe) throws SinkException {
 
     if (DEBUG) System.err.println("**** ENQUEUE ("+name+") **** Entered");
+
+    if( closed ) {
+      throw new SinkClosedException( "This queue is no longer accepting " + 
+				     " events." );
+    }
+
     synchronized(blocker) {
 
       synchronized(qlist) {
@@ -114,7 +121,13 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
     return true;
   }
 
-  public void enqueue_many(QueueElementIF[] enqueueMe) throws SinkFullException {
+  public void enqueue_many(QueueElementIF[] enqueueMe) throws SinkException {
+
+    if( closed ) {
+      throw new SinkClosedException( "This queue is no longer accepting " + 
+				     " events." );
+    }
+
     synchronized(blocker) {
       int qlen = enqueueMe.length;
 
@@ -355,6 +368,12 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
    * Provisionally enqueue the given elements.
    */
   public Object enqueue_prepare(QueueElementIF enqueueMe[]) throws SinkException {
+
+    if( closed ) {
+      throw new SinkClosedException( "This queue is no longer accepting " + 
+				     " events." );
+    }
+
     int qlen = enqueueMe.length;
     synchronized(blocker) {
       synchronized(qlist) {
@@ -412,6 +431,14 @@ public class FiniteQueue implements QueueIF, ProfilableIF {
    */
   public EnqueuePredicateIF getEnqueuePredicate() {
     return pred;
+  }
+
+  /**
+   * Indicate that this queue will not be used anymore.   Causes an
+   * exception to be thrown every time enqueue is called.
+   */
+  public void close() {
+    closed = true;
   }
 
   public String toString() {
