@@ -1,6 +1,7 @@
 aTLS: An asynchronous TLS/SSL Implementation for SEDA
 Release v1.1, 12 July 2002
-Dennis Chi (denchi@uclink4.berkeley.edu) and Matt Welsh (mdw@cs.berkeley.edu)
+By Dennis Chi (denchi@uclink4.berkeley.edu) 
+and Matt Welsh (mdw@cs.berkeley.edu)
 
 This is an implementation of TLS v1.0 and SSL v3.0 for Sandstorm. This
 library embodies an asynchronous, nonblocking implementation of TLS/SSL,
