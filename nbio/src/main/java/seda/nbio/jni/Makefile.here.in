@@ -5,7 +5,7 @@ NODOCS = true
 BASE = $(shell pwd | sed 's@\(.*\)/seda.*$$@\1/seda@' )
 JAVAHOME = @JAVA_HOME@
 
-SHAREDLINK=$(BASE)/../../lib/libNBIO.so
+SHAREDLINK=$(BASE)/../../../../bin/libNBIO.so
 
 all: libNBIO.so $(SHAREDLINK)
 
