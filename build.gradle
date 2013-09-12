@@ -1,18 +1,24 @@
+/*
+ * This gradle file mainly stores common properties of the subprojects.
+ * The src folder in this folder contains files from the original CVS project 
+ * that have not yet been migrated to gradle.
+ */
+
+
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'eclipse'
 
     repositories {
        mavenCentral()
     }
 
     dependencies {
-        testCompile 'junit:junit:4.8.2'
+        testCompile 'junit:junit:4.8.10'
     }
 
     version = '1.0'
 
-    jar {
-        // manifest.attributes provider: ''
-    }
 }
+
+
+// TODO: jar task, release task
