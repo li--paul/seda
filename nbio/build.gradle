@@ -1,0 +1,29 @@
+dependencies {
+    compile project(':util')
+}
+
+
+task javah {
+    // TODO: generate files into build folder
+    String srcpath = 'src/main/java'
+    String nbiopath = srcpath + '/seda/nbio'
+    String jnipath = nbiopath + '/jni'
+    FileTree tree = fileTree(dir: nbiopath)
+    tree.include '*.java'        
+    
+    // TODO: only invoke this task if some of those files have changed
+//    inputs.files sourceSets.main.output.asFileTree.matching({include '*.class'})
+//    outputs.files tree.each({File thefile2 -> thefile2.path.substring(0, thefile2.path.length() - 5) + '.h'})
+
+    doLast {
+        tree.each({File thefile3 -> 
+            classname = "seda.nbio." + thefile3.name.substring(0, thefile3.name.length() - 5)
+            outfile = thefile3.parent + "/jni/" + thefile3.name.substring(0, thefile3.name.length() - 5) + '.h'
+            ant.javah(class: classname, outputFile: outfile, classpath: sourceSets.main.output.asPath)
+        })
+    }
+    
+}
+
+// before we can compile javah must have built the header
+build.dependsOn javah
