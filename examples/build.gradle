@@ -1,0 +1,5 @@
+dependencies {
+    compile project(':util')
+    compile project(':nbio')
+    compile project(':sandstorm')
+}

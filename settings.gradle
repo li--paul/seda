@@ -1,2 +1,2 @@
 
-include "nbio", "sandstorm", "util"
+include "nbio", "sandstorm", "util", "examples"
