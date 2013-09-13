@@ -2,4 +2,4 @@
 
 # Front-end script to run Sandstorm
 
-LD_LIBRARY_PATH=../nbio/bin:$LD_LIBRARY_PATH; echo $LD_LIBRARY_PATH; java -ms128M -mx1024M -cp ../sandstorm/bin:../nbio/bin:../util/bin:../examples/bin seda.sandStorm.main.Main $*
+LD_LIBRARY_PATH=../nbio/build:$LD_LIBRARY_PATH; echo $LD_LIBRARY_PATH; java -ms128M -mx1024M -cp ../sandstorm/build:../nbio/build:../util/build:../examples/build seda.sandStorm.main.Main $*

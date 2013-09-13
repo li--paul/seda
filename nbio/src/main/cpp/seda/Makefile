@@ -4,9 +4,8 @@ NODOCS = true
 OTHER_TARGETS = build-here
 OTHER_CLEAN = clean-here
 
-###### don't modify anything below this line!
-BASE = $(shell pwd | sed 's@\(.*\)/seda.*$$@\1/seda@' )
-include $(BASE)/Makefile.include
+## BASE = $(shell pwd | sed 's@\(.*\)/seda.*$$@\1/seda@' )
+include Makefile.include
 
 build-here: Makefile.here my-build-here
 

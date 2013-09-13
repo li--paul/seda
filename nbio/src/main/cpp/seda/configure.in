@@ -8,6 +8,16 @@ case $host_os in
     solaris*)   PLATFORM=solaris;;
     linux-*)    PLATFORM=linux;;
 esac
+
+echo "2nd HOST OS IS $(uname -s)"
+
+case $(uname -s) in
+    SunOS*)   PLATFORM=solaris;;
+    Linux*)    PLATFORM=linux;;
+    Cygwin*)    PLATFORM=win32;;
+    Darwin*)    PLATFORM=mac;;
+esac
+
 AC_SUBST(PLATFORM)
 
 # See if /dev/poll and devpoll.h exist

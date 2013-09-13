@@ -5,21 +5,28 @@ NODOCS = true
 BASE = $(shell pwd | sed 's@\(.*\)/seda.*$$@\1/seda@' )
 JAVAHOME = @JAVA_HOME@
 
-SHAREDLINK=$(BASE)/../../../../bin/libNBIO.so
+SHAREDLINK_DIR=$(BASE)/../../../../build
+SHAREDLINK=$(SHAREDLINK_DIR)/libNBIO.so
+JAVAH_INCLUDE=$(SHAREDLINK_DIR)/include
 
 all: libNBIO.so $(SHAREDLINK)
 
 ifeq (@PLATFORM@, linux) 
   ARCHFLAGS = -Dlinux 
-  JNIINCLUDE = -I$(JAVAHOME)/include -I$(JAVAHOME)/include/genunix -I$(JAVAHOME)/include/linux
+  JNIINCLUDE = -I$(JAVAHOME)/include/genunix -I$(JAVAHOME)/include/linux
 endif
 
 ifeq (@PLATFORM@, solaris)
   ARCHFLAGS = -DSOLARIS
-  JNIINCLUDE = -I$(JAVAHOME)/include -I$(JAVAHOME)/include/genunix -I$(JAVAHOME)/include/solaris
+  JNIINCLUDE = -I$(JAVAHOME)/include/genunix -I$(JAVAHOME)/include/solaris
 endif
 
-INCLUDES = $(JNIINCLUDE) -I./include 
+ifeq (@PLATFORM@, win32)
+  ARCHFLAGS = -DSOLARIS
+  JNIINCLUDE = -I$(JAVAHOME)/include/win32
+endif
+
+INCLUDES = -I$(JAVAHOME)/include $(JNIINCLUDE) -I$(JAVAH_INCLUDE) -I./include
 
 CC = gcc
 CFLAGS = -O2 -fPIC -Wall $(INCLUDES) $(ARCHFLAGS) @DEFS@
@@ -33,7 +40,10 @@ libNBIO.so: $(COBJS)
 	echo "$(CC) -shared $(CFLAGS) $(COBJS) -o libNBIO.so $(CLIBS)"
 	@$(CC) -shared $(CFLAGS) $(COBJS) -o libNBIO.so $(CLIBS)
 
-$(SHAREDLINK): libNBIO.so
+$(SHAREDLINK_DIR):
+	@mkdir -p $(SHAREDLINK_DIR)
+
+$(SHAREDLINK): libNBIO.so $(SHAREDLINK_DIR)
 	echo "rm -f $@"
 	@rm -f $@
 	echo "cp `pwd`/libNBIO.so $@"

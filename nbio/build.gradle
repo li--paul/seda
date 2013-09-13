@@ -2,28 +2,44 @@ dependencies {
     compile project(':util')
 }
 
+project.ext {
+    srcpath = "${projectDir}/src/main/java"
+    nbiopath = srcpath + "/seda/nbio"
+    includeDirName = "${buildDir}/include"
+}
 
-task javah {
-    // TODO: generate files into build folder
-    String srcpath = 'src/main/java'
-    String nbiopath = srcpath + '/seda/nbio'
-    String jnipath = nbiopath + '/jni'
-    FileTree tree = fileTree(dir: nbiopath)
-    tree.include '*.java'        
-    
-    // TODO: only invoke this task if some of those files have changed
-//    inputs.files sourceSets.main.output.asFileTree.matching({include '*.class'})
-//    outputs.files tree.each({File thefile2 -> thefile2.path.substring(0, thefile2.path.length() - 5) + '.h'})
+
+task javahNBIO {
+    dependsOn nbio:classes
+    FileTree tree = fileTree(dir: project.nbiopath)
+    tree.include "*.java"
+
+    inputs.files sourceSets.main.output.asFileTree.matching({include "${buildDir}/classes/main/seda/nbio/*.class"})
+    outputs.files tree.collect({File thefile2 -> project.includeDirName + "/" + thefile2.name.substring(0, thefile2.name.length() - 5) + '.h'})
 
     doLast {
-        tree.each({File thefile3 -> 
-            classname = "seda.nbio." + thefile3.name.substring(0, thefile3.name.length() - 5)
-            outfile = thefile3.parent + "/jni/" + thefile3.name.substring(0, thefile3.name.length() - 5) + '.h'
+        def includeDir = new File(project.includeDirName)
+        includeDir.mkdir()
+        tree.each({File thefile3 ->
+            ext.classname = "seda.nbio." + thefile3.name.substring(0, thefile3.name.length() - 5)
+            ext.outfile = project.ext.includeDirName + "/" + thefile3.name.substring(0, thefile3.name.length() - 5) + '.h'
             ant.javah(class: classname, outputFile: outfile, classpath: sourceSets.main.output.asPath)
         })
     }
-    
+}
+
+
+task buildNBIOLib(type:Exec) {
+    FileTree tree = fileTree(dir: nbiopath)
+    tree.include '*.java'
+
+    // TODO: only invoke this task if some of those files have changed
+    inputs.files tree.each({File thefile2 -> project.ext.includeDirName + "/" + thefile2.name.substring(0, thefile2.name.length() - 5) + '.h'})
+    outputs.file "${buildDir}/libNBIO.so"
+    dependsOn javahNBIO
+    workingDir 'src/main/cpp/seda'
+    commandLine 'make', 'clean', 'all'
 }
 
 // before we can compile javah must have built the header
-build.dependsOn javah
+build.dependsOn buildNBIOLib

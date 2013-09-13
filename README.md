@@ -13,10 +13,7 @@ and buildsystem, and possibly also updating the thread messaging
 to java.nio or something like Disruptor or MentaQueue.
 
 
-While this still uses NBIO, to run, do (until I fix gradle):
+While this still uses NBIO, to run, do:
 
     gradle build
-    cd nbio/src/main/java/seda/nbio/jni
-    make
-    # back to main directory
     scrpts/sandstorm examples/src/main/java/seda/examples/basic/sandstorm.cfg

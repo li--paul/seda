@@ -578,6 +578,14 @@ case $host_os in
     linux-*)    PLATFORM=linux;;
 esac
 
+echo "2nd HOST OS IS $(uname -s)"
+
+case $(uname -s) in
+    SunOS*)   PLATFORM=solaris;;
+    Linux*)    PLATFORM=linux;;
+    Cygwin*)    PLATFORM=win32;;
+    Darwin*)    PLATFORM=mac;;
+esac
 
 # See if /dev/poll and devpoll.h exist
 # Extract the first word of "gcc", so it can be a program name with args.
