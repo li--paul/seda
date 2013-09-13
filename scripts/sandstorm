@@ -2,4 +2,8 @@
 
 # Front-end script to run Sandstorm
 
-LD_LIBRARY_PATH=../nbio/build:$LD_LIBRARY_PATH; echo $LD_LIBRARY_PATH; java -ms128M -mx1024M -cp ../sandstorm/build:../nbio/build:../util/build:../examples/build seda.sandStorm.main.Main $*
+# TODO: Cleanup classpath relative paths (use jar once gradle builds it)
+LD_LIBRARY_PATH=../nbio/build:$LD_LIBRARY_PATH; \
+java -ms128M -mx1024M \
+-cp ../sandstorm/build/classes/main:../nbio/build/classes/main:../util/build/classes/main:../examples/build/classes/main \
+seda.sandStorm.main.Main $*

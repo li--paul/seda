@@ -16,4 +16,5 @@ to java.nio or something like Disruptor or MentaQueue.
 While this still uses NBIO, to run, do:
 
     gradle build
-    scrpts/sandstorm examples/src/main/java/seda/examples/basic/sandstorm.cfg
+    cd scripts
+    ./sandstorm examples/src/main/java/seda/examples/basic/sandstorm.cfg
